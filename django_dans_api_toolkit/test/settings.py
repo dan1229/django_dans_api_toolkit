@@ -44,7 +44,7 @@ INSTALLED_APPS = (
     # rest framework
     "rest_framework",
     "rest_framework.authtoken",
-    "django_dans_notifications",
+    "django_dans_api_toolkit",
 )
 
 TEMPLATES = [
