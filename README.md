@@ -50,13 +50,6 @@ REST_FRAMEWORK = {
 ```
 
 
-## Docs
-
-#### [Model docs](https://github.com/dan1229/django_dans_api_toolkit/tree/main/docs/models.md).
-
-#### [API docs](https://github.com/dan1229/django_dans_api_toolkit/tree/main/docs/apis.md).
-
-
 -------------------------------------------------------
 
 ##### [https://danielnazarian.com](https://danielnazarian.com)
