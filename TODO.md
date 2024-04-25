@@ -4,7 +4,26 @@
 -------------------------------------------------------
 ## [Unreleased]
 -----
+### 1.0.0
 
+
+-----
+
+
+-----
+### 0.1.0
+
+
+- [ ] crud library
+
+
+- [ ] validation functions
+
+
+- [ ] `api_response` and all that stuff
+
+
+- [ ] serializers and base serializer?
 
 
 
@@ -12,6 +31,11 @@
 #### TODO
 
 ---
+### 0.0.1
+
+
+- initial pypi release
+
 
 
 
