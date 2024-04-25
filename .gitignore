@@ -1,0 +1,21 @@
+.idea/*
+.idea/
+.idea
+.DS_Store
+.tox/
+venv
+.coverage
+coverage.xml
+dist/
+build/
+django-dans-api-toolkit-db
+
+
+# env
+**/.env
+# Byte-compiled / optimized / DLL files
+**/__pycache__
+__pycache__/
+__pycache__
+*.pyc
+*$py.class
