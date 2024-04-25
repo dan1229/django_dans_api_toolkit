@@ -6,7 +6,7 @@
 
 ## Description
 
-A Django app with tools and classes to help with common API task.
+A Django app to help make building APIs great.
 
 This app is meant to be a collection of tools to help with common API tasks, and is not meant to be a full-fledged API solution. It is meant to be used in conjunction with Django Rest Framework, and is not a replacement for it.
 

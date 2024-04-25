@@ -9,39 +9,35 @@
 
 -----
 
+#### crud library
+- TODO
+
+
+#### validation functions
+- TODO
+
+
+
 
 -----
 ### 0.1.0
 
 
-- [ ] crud library
+
+#### `api_response` and all that stuff
+- api response, handler, etc.
+- add docs
+- how to set response renderer in settings
 
 
-- [ ] validation functions
-
-
-- [ ] `api_response` and all that stuff
-
-
-- [ ] serializers and base serializer?
+#### serializers and base serializer?
+- base serializer
+- docs?
+- tests?
 
 
 
 ### [0.1.0] - 2024-04-DD
-#### TODO
-
----
-### 0.0.1
-
-
-- initial pypi release
-
-
-
-
-### [0.0.1] - 2024-04-DD
-- Basic project set up with `README`, `CHANGELOG`, and `LICENSE` files
-- Basic CI and testing set up
 #### TODO
 
 -------------------------------------------------------
