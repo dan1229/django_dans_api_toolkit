@@ -1,0 +1,6 @@
+include LICENSE
+include README.rst
+recursive-include django_dans_api_toolkit/static *
+recursive-include recursive-include django_dans_api_toolkit/static *
+/templates *
+recursive-include docs *
