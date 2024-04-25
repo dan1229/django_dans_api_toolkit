@@ -12,7 +12,7 @@ on:
 
 
 jobs:
-  release:
+  release-pypi:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -35,6 +35,9 @@ jobs:
           python setup.py sdist bdist_wheel
           twine upload dist/*
 
+  release-github:
+    runs-on: ubuntu-latest
+    steps:
       - name: Create release in GitHub
         uses: ncipollo/release-action@v1
         with:
