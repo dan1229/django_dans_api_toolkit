@@ -43,6 +43,18 @@
 
 
 
+#### logging improvements
+- file name/lines would be great
+
+
+
+#### typing - add stubs
+- https://docs.python.org/3/library/typing.html
+- add to:
+    - base serializer
+    - api_response
+    - api_response_handler
+    - api_response_renderer
 
 
 ### [1.0.0] - 2024-MM-DD

@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, Dict, List, Optional
 from rest_framework import serializers
 
 """
@@ -8,7 +8,7 @@ from rest_framework import serializers
 """
 
 
-class BaseSerializer(serializers.ModelSerializer):  # type: ignore[type-arg]
+class BaseSerializer(serializers.ModelSerializer):
     """
     BaseSerializer to inherit from
 
@@ -24,37 +24,36 @@ class BaseSerializer(serializers.ModelSerializer):  # type: ignore[type-arg]
 
     ref_fields: List[str] = []
     masked_fields: List[str] = []
-    masked = True
-    ref_serializer = False
+    masked: bool = True
+    ref_serializer: bool = False
+    fields: Dict[str, serializers.Field]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        # save kwargs for later
-        self.kwargs = kwargs
+        self.kwargs = kwargs  # Save kwargs for later
 
         # handle 'fields' keyword argument
-        # Don't pass the 'fields' arg up to the superclass
-        fields = kwargs.pop("fields", None)
+        fields: Optional[List[str]] = kwargs.pop("fields", None)
 
         # if masked serializer, remove masked fields
         self.masked = kwargs.pop("masked", self.masked)
-        masked_fields = getattr(self.Meta, "masked_fields", [])
+        masked_fields = getattr(self.Meta, "masked_fields", self.masked_fields)
         if self.masked:
             for field in masked_fields:
-                self.fields.pop(field)
+                self.fields.pop(field, None)
 
         # if ref serializer, remove ref fields
         self.ref_serializer = kwargs.pop("ref_serializer", self.ref_serializer)
-        ref_fields = getattr(self.Meta, "ref_fields", [])
+        ref_fields = getattr(self.Meta, "ref_fields", self.ref_fields)
         if self.ref_serializer:
             for field in ref_fields:
-                self.fields.pop(field)
+                self.fields.pop(field, None)
 
         # Instantiate the superclass normally
-        super(BaseSerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
-        # Drop any fields that are not specified in the `fields` argument.
+        # Drop any fields that are not specified in the `fields` argument
         if fields is not None:
             allowed = set(fields)
-            existing = set(self.fields)
+            existing = set(self.fields.keys())
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
