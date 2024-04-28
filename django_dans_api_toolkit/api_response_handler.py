@@ -1,11 +1,14 @@
+import logging
 from typing import Any, Optional
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
-from api.api_response import ApiResponse
-from core.logging import LOGGER_DJANGO
+from .api_response import ApiResponse
+
+LOGGER_DJANGO = logging.getLogger("django")
+
 
 """
 ============================================================================================ #

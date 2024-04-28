@@ -1,7 +1,7 @@
 from typing import Any, Mapping, Optional
 from rest_framework.renderers import JSONRenderer
 
-from api.api_response_handler import ApiResponseHandler
+from .api_response_handler import ApiResponseHandler
 
 """
 ============================================================================================ #

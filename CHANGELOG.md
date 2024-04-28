@@ -12,6 +12,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Released]
 
+### [0.1.1] - 2024-04-28
+- Fixed local imports
+- Fixed logging in `api_response_handler`
+
+
 ### [0.1.0] - 2024-04-28
 - Added basic API helper components
     - `api_response` - A class to represent API responses
@@ -25,7 +30,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Initial release on PyPi
 - Basic project set up with `README`, `CHANGELOG`, and `LICENSE` files
 - Basic CI and testing set up
-
 
 -------------------------------------------------------
 
