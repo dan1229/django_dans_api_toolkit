@@ -58,6 +58,13 @@
     - api_response_renderer
 
 
+
+#### requiements
+- clean them up a bit
+    - require higher python version?
+- update docs
+
+
 ### [1.0.0] - 2024-MM-DD
 #### TODO
 
