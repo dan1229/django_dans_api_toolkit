@@ -49,6 +49,14 @@ REST_FRAMEWORK = {
 }
 ```
 
+## Features
+
+This app is meant to be a collection of tools to help with common API tasks, and is not meant to be a full-fledged API solution. It is meant to be used in conjunction with Django Rest Framework, and is not a replacement for it.
+
+Some of the features include:
+- API response handler - `api_response_handler.py`
+- API response renderer - `api_response_renderer.py`
+- Base serializer - `serializers/base.py`
 
 -------------------------------------------------------
 

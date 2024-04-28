@@ -8,6 +8,26 @@
 
 
 -----
+#### Django tests!!!
+
+
+##### base serializer
+- TODO
+
+
+##### api response
+- TODO
+
+
+##### api response handler
+- TODO
+
+
+##### api response renderer
+- TODO
+
+
+-----
 
 #### crud library
 - TODO
@@ -17,6 +37,10 @@
 - TODO
 
 
+#### doc improvements
+- docs/tools
+- readme should have some overview of the tools available
+
 
 
 -----
@@ -24,20 +48,19 @@
 
 
 
-#### `api_response` and all that stuff
-- api response, handler, etc.
-- add docs
-- how to set response renderer in settings
-
 
 #### serializers and base serializer?
-- base serializer
-- docs?
-- tests?
+
 
 
 
 ### [0.1.0] - 2024-04-DD
+- Added basic API helper components
+    - `api_response` - A class to represent API responses
+    - `api_response_handler` - A class to handle API responses
+    - `api_response_renderer` - A class to render API responses for Django
+- `BaseSerializer` - A base class for creating serializers
+- Some docs
 #### TODO
 
 -------------------------------------------------------
