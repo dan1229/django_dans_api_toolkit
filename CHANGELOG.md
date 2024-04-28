@@ -12,6 +12,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Released]
 
+
+### [0.2.0] - 2024-04-28
+- Typing added!
+- Removed `.pyi` files
+
+
 ### [0.1.9] - 2024-04-28
 - Added `pytyped` file to `setup.cfg`
 

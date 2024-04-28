@@ -49,6 +49,7 @@
 
 
 #### typing - add stubs
+- anything else to do?
 - https://docs.python.org/3/library/typing.html
 - add to:
     - base serializer
