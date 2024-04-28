@@ -1,5 +1,5 @@
 # base.pyi
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 from rest_framework import serializers
 
 # TYPE DEFINITIONS
