@@ -8,6 +8,26 @@
 
 
 -----
+#### Django tests!!!
+
+
+##### base serializer
+- TODO
+
+
+##### api response
+- TODO
+
+
+##### api response handler
+- TODO
+
+
+##### api response renderer
+- TODO
+
+
+-----
 
 #### crud library
 - TODO
@@ -30,9 +50,7 @@
 
 
 #### serializers and base serializer?
-- base serializer
-- docs?
-- tests?
+
 
 
 
@@ -41,6 +59,8 @@
     - `api_response` - A class to represent API responses
     - `api_response_handler` - A class to handle API responses
     - `api_response_renderer` - A class to render API responses for Django
+- `BaseSerializer` - A base class for creating serializers
+- Some docs
 #### TODO
 
 -------------------------------------------------------

@@ -2,6 +2,7 @@
 
 This document is about the tools and helpers offered by this project.
 
+
 ## API Helpers
 
 ### `api_response`
@@ -73,3 +74,19 @@ REST_FRAMEWORK = {
 ```
 
 This does things like add a `message` field to the response to always be there.
+
+
+
+## Serializers
+
+### Base Serializer
+
+The `BaseSerializer` class is a base class that you can use to create your own serializers. It offers some basic functionality that you might want to use in your own serializers.
+
+Some features include:
+- `masked` - a list of fields that should be masked in the response. This can be controlled on a per-serializer instance basis.
+    - Set this via `masked_fields` in the serializer's `Meta` class.
+- `ref_serializer` - whether or not this serializer is a reference serializer. This can significantly help performance optimizations
+    - Set this via `ref_fields` in the serializer's `Meta` class.
+- `fields` - a list of fields that should be included in the response. This is to help with very specific use cases where you want to limit the fields returned.
+
