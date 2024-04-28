@@ -12,6 +12,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Released]
 
+### [0.1.4] - 2024-04-28
+- Test type stubs for `BaseSerializer`
+
+
 ### [0.1.3] - 2024-04-28
 - Clean up types for `BaseSerializer`
 
