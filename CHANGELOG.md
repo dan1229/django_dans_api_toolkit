@@ -12,6 +12,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Released]
 
+### [0.1.0] - 2024-04-28
+- Added basic API helper components
+    - `api_response` - A class to represent API responses
+    - `api_response_handler` - A class to handle API responses
+    - `api_response_renderer` - A class to render API responses for Django
+- `BaseSerializer` - A base class for creating serializers
+- Some docs
+
+
 ### [0.0.1] - 2024-04-24
 - Initial release on PyPi
 - Basic project set up with `README`, `CHANGELOG`, and `LICENSE` files
