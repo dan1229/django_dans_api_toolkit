@@ -59,10 +59,24 @@
 
 
 
-#### requiements
+#### package requiements
 - clean them up a bit
     - require higher python version?
 - update docs
+
+
+
+#### error fields
+- some weird cases like this:
+```
+--
+[14/May/2024]: ERROR (api_response_handler.py:83)
+Error updating user profile. - {'profile_image': [ErrorDetail(string='Upload a valid image. The file you uploaded was either not an image or a corrupted image.', code='invalid_image')]}
+--
+```
+- weird logging from `api_response_handler.handle_error`
+- this will have a `message` set to the default though
+    - should `message` be set manually if not set?
 
 
 ### [1.0.0] - 2024-MM-DD
