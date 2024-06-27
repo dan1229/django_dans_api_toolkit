@@ -14,49 +14,48 @@ class BaseSerializer(serializers.ModelSerializer):
 
     :param bool masked:             If True, will mask the serializer.
                                     Based on `masked_fields` property. Fields in `masked_fields` will only
-                                    show up if `masked` is False
+                                    show up if `masked` is False.
+                                    NOTE: this is the default behavior.
     :param bool ref_serializer:     If True, will return a reference serializer.
-                                    Based on `ref_fields` property, fields in `ref_fields` will only show
+                                    Based on `ref_fields` property. Fields in `ref_fields` will only show
                                     up if `ref_serializer` is False. If `ref_fields` is not provided,
                                     all fields will be returned.
-    :param str[] fields:            Additional kwargs 'field' that controls which fields to include
+    :param List[str] fields:        Additional kwargs 'field' that controls which fields to include.
+                                    NOTE: his overrides both `masked` and `ref_serializer` logic.
     """
 
     ref_fields: List[str] = []
     masked_fields: List[str] = []
     masked: bool = True
     ref_serializer: bool = False
-    fields: Dict[str, serializers.Field]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        self.kwargs = kwargs  # Save kwargs for later
-
         # handle 'fields' keyword argument
-        # TODO why do we need this and the self.fields again?
         fields: Optional[List[str]] = kwargs.pop("fields", None)
 
-        # if masked serializer, remove masked fields
-        self.masked = kwargs.pop("masked", self.masked)
-        masked_fields = getattr(self.Meta, "masked_fields", self.masked_fields)
-        if self.masked:
-            for field in masked_fields:
-                self.fields.pop(field, None)
-
-        # if ref serializer, remove ref fields
-        self.ref_serializer = kwargs.pop("ref_serializer", self.ref_serializer)
-        ref_fields = getattr(self.Meta, "ref_fields", self.ref_fields)
-        if self.ref_serializer:
-            for field in ref_fields:
-                self.fields.pop(field, None)
+        # Save the original kwargs
+        self.kwargs = kwargs
 
         # Instantiate the superclass normally
-        # NOTE: the placement of this (after the ref/masked logic)
-        # is VERY important
         super().__init__(*args, **kwargs)
 
-        # Drop any fields that are not specified in the `fields` argument
+        # If fields is explicitly passed, it overrides masked and ref_serializer logic
         if fields is not None:
             allowed = set(fields)
             existing = set(self.fields.keys())
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
+        else:
+            # if masked serializer, remove masked fields
+            self.masked = kwargs.pop("masked", self.masked)
+            masked_fields = getattr(self.Meta, "masked_fields", self.masked_fields)
+            if self.masked:
+                for field in masked_fields:
+                    self.fields.pop(field, None)
+
+            # if ref serializer, remove ref fields
+            self.ref_serializer = kwargs.pop("ref_serializer", self.ref_serializer)
+            ref_fields = getattr(self.Meta, "ref_fields", self.ref_fields)
+            if self.ref_serializer:
+                for field in ref_fields:
+                    self.fields.pop(field, None)
