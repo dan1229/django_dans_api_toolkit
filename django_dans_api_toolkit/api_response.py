@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Optional, Union, Dict, List
 
 
 """
@@ -20,8 +20,8 @@ class ApiResponse:
         self,
         status: Optional[int] = None,
         message: Optional[str] = None,
-        results: Optional[object | dict[Any, Any] | list[Any]] = None,
-        error_fields: Optional[dict[Any, Any]] = None,
+        results: Optional[Union[object, Dict[Any, Any], List[Any]]] = None,
+        error_fields: Optional[Dict[Any, Any]] = None,
         **kwargs: Any
     ) -> None:
         self.status = status
@@ -30,7 +30,7 @@ class ApiResponse:
         self.error_fields = error_fields
         self.extras = kwargs
 
-    def dict(self) -> dict[Any, Any]:
+    def dict(self) -> Dict[Any, Any]:
         """
         Convert ApiResponse to dict. Primarily to use in actual Response object.
 
