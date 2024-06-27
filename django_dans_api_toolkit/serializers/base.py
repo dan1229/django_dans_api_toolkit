@@ -29,10 +29,7 @@ class BaseSerializer(serializers.ModelSerializer):
     fields: Dict[str, serializers.Field]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        # Instantiate the superclass normally
-        # NOTE: This is important as is allows other kwargs to be passed
-        # and will interfere with end users less
-        super().__init__(*args, **kwargs)
+        self.kwargs = kwargs  # Save kwargs for later
 
         # handle 'fields' keyword argument
         # TODO why do we need this and the self.fields again?
