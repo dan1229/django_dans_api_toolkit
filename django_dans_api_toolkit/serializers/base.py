@@ -29,12 +29,14 @@ class BaseSerializer(serializers.ModelSerializer):
     fields: Dict[str, serializers.Field]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        # handle 'fields' keyword argument
-        fields: Optional[List[str]] = kwargs.pop("fields", None)
         # Instantiate the superclass normally
         # NOTE: This is important as is allows other kwargs to be passed
         # and will interfere with end users less
         super().__init__(*args, **kwargs)
+
+        # handle 'fields' keyword argument
+        # TODO why do we need this and the self.fields again?
+        fields: Optional[List[str]] = kwargs.pop("fields", None)
 
         # if masked serializer, remove masked fields
         self.masked = kwargs.pop("masked", self.masked)
