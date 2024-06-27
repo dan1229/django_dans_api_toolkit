@@ -26,31 +26,36 @@ class BaseSerializer(serializers.ModelSerializer):
     masked_fields: List[str] = []
     masked: bool = True
     ref_serializer: bool = False
+    fields: Dict[str, serializers.Field]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        # handle 'fields' keyword argument
-        fields: Optional[List[str]] = kwargs.pop("fields", None)
-
-        # handle masked serializer
-        self.masked = kwargs.pop("masked", self.masked)
-        masked_fields = getattr(self.Meta, "masked_fields", self.masked_fields)
-
-        # handle ref serializer
-        self.ref_serializer = kwargs.pop("ref_serializer", self.ref_serializer)
-        ref_fields = getattr(self.Meta, "ref_fields", self.ref_fields)
-
         # Instantiate the superclass normally
+        # NOTE: This is important as is allows other kwargs to be passed
+        # and will interfere with end users less
         super().__init__(*args, **kwargs)
 
+        # handle 'fields' keyword argument
+        # TODO why do we need this and the self.fields again?
+        fields: Optional[List[str]] = kwargs.pop("fields", None)
+
         # if masked serializer, remove masked fields
+        self.masked = kwargs.pop("masked", self.masked)
+        masked_fields = getattr(self.Meta, "masked_fields", self.masked_fields)
         if self.masked:
             for field in masked_fields:
                 self.fields.pop(field, None)
 
         # if ref serializer, remove ref fields
+        self.ref_serializer = kwargs.pop("ref_serializer", self.ref_serializer)
+        ref_fields = getattr(self.Meta, "ref_fields", self.ref_fields)
         if self.ref_serializer:
             for field in ref_fields:
                 self.fields.pop(field, None)
+
+        # Instantiate the superclass normally
+        # NOTE: the placement of this (after the ref/masked logic)
+        # is VERY important
+        super().__init__(*args, **kwargs)
 
         # Drop any fields that are not specified in the `fields` argument
         if fields is not None:
