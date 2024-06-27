@@ -33,9 +33,9 @@ class ApiResponseRendererTestCase(TestCase):
             response.data, renderer_context={"response": response}
         )
 
-        self.assertIn(b'"message": "Not found"', rendered_content)
-        self.assertIn(b'"results": null', rendered_content)
-        self.assertIn(b'"error_fields": null', rendered_content)
+        self.assertIn(b'"message":"Not found"', rendered_content)
+        self.assertIn(b'"results":null', rendered_content)
+        self.assertIn(b'"error_fields":null', rendered_content)
 
     def test_render_without_message(self):
         request = self.factory.post("/mock-view/")
@@ -46,9 +46,9 @@ class ApiResponseRendererTestCase(TestCase):
             response.data, renderer_context={"response": response}
         )
 
-        self.assertIn(b'"message": "Successfully completed request."', rendered_content)
-        self.assertIn(b'"results": {"key": "value"}', rendered_content)
-        self.assertIn(b'"error_fields": null', rendered_content)
+        self.assertIn(b'"message":"Successfully completed request."', rendered_content)
+        self.assertIn(b'"results":{"key":"value"}', rendered_content)
+        self.assertIn(b'"error_fields":null', rendered_content)
 
     def test_render_without_results(self):
         request = self.factory.get("/mock-view/")
@@ -59,9 +59,9 @@ class ApiResponseRendererTestCase(TestCase):
             response.data, renderer_context={"response": response}
         )
 
-        self.assertIn(b'"message": "Custom message"', rendered_content)
-        self.assertIn(b'"results": null', rendered_content)
-        self.assertIn(b'"error_fields": null', rendered_content)
+        self.assertIn(b'"message":"Custom message"', rendered_content)
+        self.assertIn(b'"results":null', rendered_content)
+        self.assertIn(b'"error_fields":null', rendered_content)
 
     def test_render_without_error_fields(self):
         request = self.factory.get("/mock-view/")
@@ -75,9 +75,9 @@ class ApiResponseRendererTestCase(TestCase):
             response.data, renderer_context={"response": response}
         )
 
-        self.assertIn(b'"message": "Another custom message"', rendered_content)
-        self.assertIn(b'"results": {"key": "value"}', rendered_content)
-        self.assertIn(b'"error_fields": null', rendered_content)
+        self.assertIn(b'"message":"Another custom message"', rendered_content)
+        self.assertIn(b'"results":{"key":"value"}', rendered_content)
+        self.assertIn(b'"error_fields":null', rendered_content)
 
     def test_render_combined_scenario(self):
         request = self.factory.get("/mock-view/")
@@ -88,6 +88,6 @@ class ApiResponseRendererTestCase(TestCase):
             response.data, renderer_context={"response": response}
         )
 
-        self.assertIn(b'"message": "Error. Please try again later."', rendered_content)
-        self.assertIn(b'"results": null', rendered_content)
-        self.assertIn(b'"error_fields": null', rendered_content)
+        self.assertIn(b'"message":"Error. Please try again later."', rendered_content)
+        self.assertIn(b'"results":null', rendered_content)
+        self.assertIn(b'"error_fields":null', rendered_content)
