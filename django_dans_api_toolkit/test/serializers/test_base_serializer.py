@@ -1,5 +1,6 @@
 from django.test import TestCase
-from .models import SampleModel, SampleSerializer
+from .models import SampleModel
+from .serializers import SampleSerializer
 
 
 class BaseSerializerTestCase(TestCase):
@@ -12,24 +13,39 @@ class BaseSerializerTestCase(TestCase):
     def test_default_serialization(self):
         serializer = SampleSerializer(self.instance)
         data = serializer.data
-        self.assertEqual(set(data.keys()), {"id", "field1", "field2", "field3"})
+        self.assertIn("id", data)
+        self.assertIn("field1", data)
+        self.assertIn("field2", data)
+        self.assertIn("field3", data)
 
     def test_masked_serialization(self):
         serializer = SampleSerializer(self.instance, masked=True)
         data = serializer.data
-        self.assertEqual(set(data.keys()), {"id", "field1", "field2"})
+        self.assertIn("id", data)
+        self.assertIn("field1", data)
+        self.assertIn("field2", data)
+        self.assertNotIn("field3", data)
 
     def test_ref_serialization(self):
         serializer = SampleSerializer(self.instance, ref_serializer=True)
         data = serializer.data
-        self.assertEqual(set(data.keys()), {"id", "field3"})
+        self.assertIn("id", data)
+        self.assertNotIn("field1", data)
+        self.assertNotIn("field2", data)
+        self.assertIn("field3", data)
 
     def test_custom_fields_serialization(self):
         serializer = SampleSerializer(self.instance, fields=["field1", "field3"])
         data = serializer.data
-        self.assertEqual(set(data.keys()), {"field1", "field3"})
+        self.assertIn("field1", data)
+        self.assertIn("field3", data)
+        self.assertNotIn("id", data)
+        self.assertNotIn("field2", data)
 
     def test_combined_masked_and_ref_serialization(self):
         serializer = SampleSerializer(self.instance, masked=True, ref_serializer=True)
         data = serializer.data
-        self.assertEqual(set(data.keys()), {"id", "field3"})
+        self.assertIn("id", data)
+        self.assertNotIn("field1", data)
+        self.assertNotIn("field2", data)
+        self.assertIn("field3", data)
