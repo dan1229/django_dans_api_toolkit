@@ -3,11 +3,30 @@
 
 -------------------------------------------------------
 ## [Unreleased]
+----
+### Improvements
+
+#### crud library
+- TODO
+
+
+#### validation functions
+- TODO
+
+
+-----
+### 1.1.0
+
+
+
+TODO
+
+
+
 -----
 ### 1.0.0
 
 
------
 #### Django tests!!!
 
 
@@ -29,37 +48,24 @@
 
 -----
 
-#### crud library
-- TODO
-
-
-#### validation functions
-- TODO
-
 
 #### doc improvements
-- docs/tools
+- docs/tools available
 - readme should have some overview of the tools available
+- badges?
+    - pipeline statuses
+    - coverage?
+- pypi link
 
 
 
 #### logging improvements
 - file name/lines would be great
+- get rid of ALL prints and stuff
 
 
 
-#### typing - add stubs
-- anything else to do?
-- https://docs.python.org/3/library/typing.html
-- add to:
-    - base serializer
-    - api_response
-    - api_response_handler
-    - api_response_renderer
-
-
-
-#### package requiements
+#### package requirements
 - clean them up a bit
     - require higher python version?
 - update docs
