@@ -154,8 +154,12 @@ class ApiResponseHandler:
         elif isinstance(error, IntegrityError):
             message_res = str(error)
         # get field error for 'message'
-        elif error_fields and error_fields.size():
-            pass
+        elif error_fields and len(error_fields) > 0:
+            # Assuming the first field error is representative
+            first_key = next(iter(error_fields))
+            first_error_list = error_fields[first_key]
+            if isinstance(first_error_list, list) and len(first_error_list) > 0:
+                message_res = str(first_error_list[0])
 
         # Figure out logging / error
 
