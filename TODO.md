@@ -40,7 +40,8 @@ TODO
 
 #### logging improvements
 - file name/lines would be great
-- get rid of ALL prints and stuff
+    - i.e., which api failed not the api_response_handler itself please
+- way to hook into existing loggers or use 'new' one?
 
 
 
