@@ -26,11 +26,13 @@ class BaseSerializer(serializers.ModelSerializer):
     masked_fields: List[str] = []
     masked: bool = True
     ref_serializer: bool = False
-    fields: Dict[str, serializers.Field]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         # handle 'fields' keyword argument
         fields: Optional[List[str]] = kwargs.pop("fields", None)
+
+        # Instantiate the superclass normally
+        super().__init__(*args, **kwargs)
 
         # if masked serializer, remove masked fields
         self.masked = kwargs.pop("masked", self.masked)
@@ -45,9 +47,6 @@ class BaseSerializer(serializers.ModelSerializer):
         if self.ref_serializer:
             for field in ref_fields:
                 self.fields.pop(field, None)
-
-        # Instantiate the superclass normally
-        super().__init__(*args, **kwargs)
 
         # Drop any fields that are not specified in the `fields` argument
         if fields is not None:
