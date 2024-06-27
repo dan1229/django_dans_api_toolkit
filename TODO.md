@@ -27,27 +27,6 @@ TODO
 ### 1.0.0
 
 
-#### Django tests!!!
-
-
-##### base serializer
-- TODO
-
-
-##### api response
-- TODO
-
-
-##### api response handler
-- TODO
-
-
-##### api response renderer
-- TODO
-
-
------
-
 
 #### doc improvements
 - docs/tools available
@@ -68,24 +47,24 @@ TODO
 #### package requirements
 - clean them up a bit
     - require higher python version?
+- add support for django 5 and higher
+    - add to ci tests
 - update docs
 
 
 
-#### error fields
-- some weird cases like this:
-```
---
-[14/May/2024]: ERROR (api_response_handler.py:83)
-Error updating user profile. - {'profile_image': [ErrorDetail(string='Upload a valid image. The file you uploaded was either not an image or a corrupted image.', code='invalid_image')]}
---
-```
-- weird logging from `api_response_handler.handle_error`
-- this will have a `message` set to the default though
-    - should `message` be set manually if not set?
+
+#### Django tests!!!
+- base serializer
+- api response
+- api response handler
+- api response renderer
+- 
+- impove ci
 
 
-### [1.0.0] - 2024-MM-DD
+
+### [1.0.0] - 2024-06-DD
 - Fix weird error fields handling
     - Will use field errors if no 'better error message'
 #### TODO
