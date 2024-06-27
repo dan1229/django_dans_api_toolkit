@@ -63,6 +63,9 @@ TODO
 -
 - double check all tests are actually solid
     - any edge cases?
+    - test on 'client' project somehow?
+        - pre release or something?
+            - actually just release like 0.99.0 or is there a better way
 
 
 
