@@ -16,6 +16,7 @@ class BaseSerializerTestCase(TestCase):
         self.assertIn("field1", data)
         self.assertIn("field2", data)
         self.assertIn("field3", data)
+        self.assertIn("field4", data)
 
     def test_masked_serialization(self):
         serializer = SampleSerializer(self.instance, masked=True)
@@ -24,6 +25,7 @@ class BaseSerializerTestCase(TestCase):
         self.assertIn("field1", data)
         self.assertIn("field2", data)
         self.assertNotIn("field3", data)
+        self.assertIn("field4", data)
 
     def test_ref_serialization(self):
         serializer = SampleSerializer(self.instance, ref_serializer=True)
@@ -32,6 +34,7 @@ class BaseSerializerTestCase(TestCase):
         self.assertNotIn("field1", data)
         self.assertNotIn("field2", data)
         self.assertIn("field3", data)
+        self.assertIn("field4", data)
 
     def test_custom_fields_serialization(self):
         serializer = SampleSerializer(self.instance, fields=["field1", "field3"])
@@ -40,6 +43,7 @@ class BaseSerializerTestCase(TestCase):
         self.assertIn("field3", data)
         self.assertNotIn("id", data)
         self.assertNotIn("field2", data)
+        self.assertNotIn("field4", data)
 
     def test_combined_masked_and_ref_serialization(self):
         serializer = SampleSerializer(self.instance, masked=True, ref_serializer=True)
@@ -47,4 +51,5 @@ class BaseSerializerTestCase(TestCase):
         self.assertIn("id", data)
         self.assertNotIn("field1", data)
         self.assertNotIn("field2", data)
-        self.assertIn("field3", data)
+        self.assertNotIn("field3", data)
+        self.assertIn("field4", data)
