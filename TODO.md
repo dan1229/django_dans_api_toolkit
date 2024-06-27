@@ -57,8 +57,6 @@ TODO
 
 #### Django tests!!!
 - base serializer
-- api response
-- api response handler
 - api response renderer
 - 
 - impove ci
