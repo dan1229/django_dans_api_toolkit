@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Optional
+from typing import Any, Optional, Union
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from rest_framework.response import Response
@@ -44,7 +44,7 @@ class ApiResponseHandler:
     @staticmethod
     def _format_response(
         response: Optional[Response] = None,
-        results: Optional[object | dict[Any, Any] | list[Any]] = None,
+        results: Optional[Union[object, dict[Any, Any], list[Any]]] = None,
         message: Optional[str] = None,
         status: Optional[int] = None,
         error_fields: Optional[dict[Any, Any]] = None,
@@ -88,7 +88,7 @@ class ApiResponseHandler:
     def response_success(
         self,
         message: Optional[str] = None,
-        results: Optional[object | dict[Any, Any] | list[Any]] = None,
+        results: Optional[Union[object, dict[Any, Any], list[Any]]] = None,
         response: Optional[Response] = None,
         status: Optional[int] = HTTP_200_OK,
     ) -> Response:
@@ -102,9 +102,8 @@ class ApiResponseHandler:
         :rtype: Response
         """
         # no message = use default
-        if not message or message == "":
+        if not message:
             message = self.message_success
-        message = str(message)
 
         return self._format_response(
             response=response, results=results, message=message, status=status
@@ -112,10 +111,10 @@ class ApiResponseHandler:
 
     def response_error(
         self,
-        error: Optional[str | Exception] = None,
+        error: Optional[Union[str, Exception]] = None,
         error_fields: Optional[dict[Any, Any]] = None,
         message: Optional[str] = None,
-        results: Optional[object | dict[Any, Any] | list[Any]] = None,
+        results: Optional[Union[object, dict[Any, Any], list[Any]]] = None,
         response: Optional[Response] = None,
         status: Optional[int] = HTTP_400_BAD_REQUEST,
         print_log: Optional[bool] = True,
@@ -132,42 +131,50 @@ class ApiResponseHandler:
         :returns: response of the desired format
         :rtype: Response
         """
+        # Figure out actual message
+
+        # Initialize message_res with default error message
+        message_res = self.message_error
+
+        # use provided message if available
+        # this is top priority
+        if message:
+            message_res = str(message)
         # django validation error
-        if (
+        elif (
             isinstance(error, ValidationError)
             and hasattr(error, "error_dict")
             and error.error_dict.get("__all__")
         ):
             # try to parse ValidationError
-            messageDict = error.message_dict.get("__all__")
-            if isinstance(messageDict, list) and len(messageDict) > 0:
-                messageRes = str(messageDict[0])
-            else:
-                messageRes = self.message_error
+            message_dict = error.message_dict.get("__all__")
+            if isinstance(message_dict, list) and len(message_dict) > 0:
+                message_res = str(message_dict[0])
         # integrity error
         elif isinstance(error, IntegrityError):
-            messageRes = str(error)
-        # no message passed and error isn't one we can parse
-        elif not message or message == "":  # use default message
-            messageRes = self.message_error
-        else:  # message passed, ensure it's a string
-            messageRes = str(message)
+            message_res = str(error)
+        # get field error for 'message'
+        elif error_fields and len(error_fields) > 0:
+            # Assuming the first field error is representative
+            first_key = next(iter(error_fields))
+            first_error_list = error_fields[first_key]
+            if isinstance(first_error_list, list) and len(first_error_list) > 0:
+                message_res = str(first_error_list[0])
 
-        # error NOT passed, pass as this is probably not intended to be logged
-        if not error or error == "":
-            pass
-        else:  # error passed, log it somehow
-            if not message or message == "":  # message not passed, log error itself
-                self._handle_logging(str(error), print_log)
-            elif message != error:  # message and error different, log both
+        # Figure out logging / error
+
+        # error PASSED, this means we are potentially logging something
+        if error:
+            if message and message != error:  # message and error different, log both
                 self._handle_logging(f"{message} - {error}", print_log)
             else:  # error and message both exist and are the same
                 self._handle_logging(str(error), print_log)
 
+        # Handle response
         return self._format_response(
             response=response,
             results=results,
-            message=messageRes,
+            message=message_res,
             status=status,
             error_fields=error_fields,
         )
