@@ -6,7 +6,7 @@ class BaseSerializerTestCase(TestCase):
 
     def setUp(self):
         self.instance = SampleModel(
-            id=1, field1="value1", field2="value2", field3="value3"
+            id=1, field1="value1", field2="value2", field3="value3", field4="value4"
         )
 
     def test_default_serialization(self):
@@ -72,3 +72,63 @@ class BaseSerializerTestCase(TestCase):
         self.assertNotIn("field2", data)
         self.assertNotIn("field3", data)
         self.assertIn("field4", data)
+
+    def test_fields_override_masked_and_ref(self):
+        serializer = SampleSerializer(
+            self.instance, fields=["field3"], masked=True, ref_serializer=True
+        )
+        data = serializer.data
+        self.assertIn("field3", data)
+        self.assertNotIn("id", data)
+        self.assertNotIn("field1", data)
+        self.assertNotIn("field2", data)
+        self.assertNotIn("field4", data)
+
+    def test_empty_fields(self):
+        serializer = SampleSerializer(self.instance, fields=[])
+        data = serializer.data
+        self.assertNotIn("id", data)
+        self.assertNotIn("field1", data)
+        self.assertNotIn("field2", data)
+        self.assertNotIn("field3", data)
+        self.assertNotIn("field4", data)
+
+    def test_invalid_field_in_fields(self):
+        serializer = SampleSerializer(self.instance, fields=["invalid_field"])
+        data = serializer.data
+        self.assertNotIn("id", data)
+        self.assertNotIn("field1", data)
+        self.assertNotIn("field2", data)
+        self.assertNotIn("field3", data)
+        self.assertNotIn("field4", data)
+
+    def test_all_fields_explicitly(self):
+        serializer = SampleSerializer(
+            self.instance, fields=["id", "field1", "field2", "field3", "field4"]
+        )
+        data = serializer.data
+        self.assertIn("id", data)
+        self.assertIn("field1", data)
+        self.assertIn("field2", data)
+        self.assertIn("field3", data)
+        self.assertIn("field4", data)
+
+    def test_masked_and_custom_fields(self):
+        serializer = SampleSerializer(self.instance, fields=["field3"], masked=True)
+        data = serializer.data
+        self.assertIn("field3", data)
+        self.assertNotIn("id", data)
+        self.assertNotIn("field1", data)
+        self.assertNotIn("field2", data)
+        self.assertNotIn("field4", data)
+
+    def test_ref_and_custom_fields(self):
+        serializer = SampleSerializer(
+            self.instance, fields=["field3"], ref_serializer=True
+        )
+        data = serializer.data
+        self.assertIn("field3", data)
+        self.assertNotIn("id", data)
+        self.assertNotIn("field1", data)
+        self.assertNotIn("field2", data)
+        self.assertNotIn("field4", data)

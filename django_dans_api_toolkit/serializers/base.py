@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, List, Optional
 from rest_framework import serializers
 
 """
@@ -30,7 +30,8 @@ class BaseSerializer(serializers.ModelSerializer):
     ref_serializer: bool = False
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        # handle 'fields' keyword argument
+        # handle 'fields' keyword argument first since
+        # it overrides the other logic
         fields: Optional[List[str]] = kwargs.pop("fields", None)
 
         # Save the original kwargs
