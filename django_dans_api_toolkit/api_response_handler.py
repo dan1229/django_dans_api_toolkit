@@ -1,9 +1,9 @@
-import logging
-from typing import Any, Optional, Union, Dict, List
+from typing import Any, Dict, List, Optional, Union
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+import logging
 
 from .api_response import ApiResponse
 
@@ -114,9 +114,9 @@ class ApiResponseHandler:
     def response_error(
         self,
         error: Optional[Union[str, Exception]] = None,
-        error_fields: Optional[dict[Any, Any]] = None,
+        error_fields: Optional[Dict[Any, Any]] = None,
         message: Optional[str] = None,
-        results: Optional[Union[object, dict[Any, Any], list[Any]]] = None,
+        results: Optional[Union[object, Dict[Any, Any], List[Any]]] = None,
         response: Optional[Response] = None,
         status: Optional[int] = HTTP_400_BAD_REQUEST,
         print_log: Optional[bool] = True,
@@ -133,7 +133,7 @@ class ApiResponseHandler:
         :returns: response of the desired format
         :rtype: Response
         """
-        # Figure out actual 'message' for API response
+        # Figure out actual message
 
         # Initialize message_res with default error message
         message_res = self.message_error
