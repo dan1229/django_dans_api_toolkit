@@ -131,8 +131,17 @@ class ApiResponseHandler:
         :returns: response of the desired format
         :rtype: Response
         """
+        # Figure out actual message
+
+        # Initialize message_res with default error message
+        message_res = self.message_error
+
+        # use provided message if available
+        # this is top priority
+        if message:
+            message_res = str(message)
         # django validation error
-        if (
+        elif (
             isinstance(error, ValidationError)
             and hasattr(error, "error_dict")
             and error.error_dict.get("__all__")
@@ -141,16 +150,14 @@ class ApiResponseHandler:
             message_dict = error.message_dict.get("__all__")
             if isinstance(message_dict, list) and len(message_dict) > 0:
                 message_res = str(message_dict[0])
-            else:
-                message_res = self.message_error
         # integrity error
         elif isinstance(error, IntegrityError):
             message_res = str(error)
-        # no message passed and error isn't one we can parse
-        elif not message or message == "":  # use default message
-            message_res = self.message_error
-        else:  # message passed, ensure it's a string
-            message_res = str(message)
+        # get field error for 'message'
+        elif error_fields and error_fields.size():
+            pass
+
+        # Figure out logging / error
 
         # error NOT passed, pass as this is probably not intended to be logged
         if error:
@@ -159,6 +166,7 @@ class ApiResponseHandler:
             else:  # error and message both exist and are the same
                 self._handle_logging(str(error), print_log)
 
+        # Handle response
         return self._format_response(
             response=response,
             results=results,
