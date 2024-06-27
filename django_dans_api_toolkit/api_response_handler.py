@@ -82,7 +82,7 @@ class ApiResponseHandler:
                 LOGGER_DJANGO.error(msg)
 
     #
-    # RESPONSES
+    # RESPONSE SUCCESS
     #
     def response_success(
         self,
@@ -108,6 +108,9 @@ class ApiResponseHandler:
             response=response, results=results, message=message, status=status
         )
 
+    #
+    # RESPONSE ERROR
+    #
     def response_error(
         self,
         error: Optional[Union[str, Exception]] = None,
@@ -130,7 +133,7 @@ class ApiResponseHandler:
         :returns: response of the desired format
         :rtype: Response
         """
-        # Figure out actual message
+        # Figure out actual 'message' for API response
 
         # Initialize message_res with default error message
         message_res = self.message_error
