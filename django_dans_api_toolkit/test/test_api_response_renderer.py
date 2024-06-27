@@ -89,3 +89,79 @@ class ApiResponseRendererTestCase(TestCase):
         self.assertIn(b'"message":"Error. Please try again later."', rendered_content)
         self.assertIn(b'"results":null', rendered_content)
         self.assertIn(b'"error_fields":null', rendered_content)
+
+    # Additional test cases for 100% coverage
+
+    def test_render_with_results_and_error_fields(self):
+        request = self.factory.get("/mock-view/")
+        response = Response(
+            {"results": {"key": "value"}, "error_fields": {"field": "error"}},
+            status=status.HTTP_200_OK,
+        )
+
+        renderer = ApiResponseRenderer()
+        rendered_content = renderer.render(
+            response.data, renderer_context={"response": response}
+        )
+
+        self.assertIn(b'"results":{"key":"value"}', rendered_content)
+        self.assertIn(b'"error_fields":{"field":"error"}', rendered_content)
+
+    def test_render_with_custom_status_code(self):
+        request = self.factory.get("/mock-view/")
+        response = Response({"detail": "Custom detail"}, status=status.HTTP_201_CREATED)
+
+        renderer = ApiResponseRenderer()
+        rendered_content = renderer.render(
+            response.data, renderer_context={"response": response}
+        )
+
+        self.assertIn(b'"message":"Custom detail"', rendered_content)
+        self.assertIn(b'"results":null', rendered_content)
+        self.assertIn(b'"error_fields":null', rendered_content)
+
+    def test_render_with_no_detail_no_results(self):
+        request = self.factory.get("/mock-view/")
+        response = Response({}, status=status.HTTP_200_OK)
+
+        renderer = ApiResponseRenderer()
+        rendered_content = renderer.render(
+            response.data, renderer_context={"response": response}
+        )
+
+        self.assertIn(b'"message":"Successfully completed request."', rendered_content)
+        self.assertIn(b'"results":null', rendered_content)
+        self.assertIn(b'"error_fields":null', rendered_content)
+
+    def test_render_with_no_renderer_context(self):
+        response = Response({"key": "value"}, status=status.HTTP_200_OK)
+
+        renderer = ApiResponseRenderer()
+        rendered_content = renderer.render(response.data)
+
+        self.assertIn(b'"key":"value"', rendered_content)
+
+    def test_render_with_renderer_context_but_no_response(self):
+        response = {"key": "value"}
+
+        renderer = ApiResponseRenderer()
+        rendered_content = renderer.render(
+            response, renderer_context={"some_key": "some_value"}
+        )
+
+        self.assertIn(b'"key":"value"', rendered_content)
+
+    def test_render_with_error_and_no_message(self):
+        request = self.factory.get("/mock-view/")
+        response = Response(
+            {"error_fields": {"field": "error"}}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+        renderer = ApiResponseRenderer()
+        rendered_content = renderer.render(
+            response.data, renderer_context={"response": response}
+        )
+
+        self.assertIn(b'"message":"Error. Please try again later."', rendered_content)
+        self.assertIn(b'"results":null', rendered_content)
+        self.assertIn(b'"error_fields":{"field":"error"}', rendered_content)
