@@ -1,4 +1,4 @@
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 from rest_framework import serializers
 
 """
@@ -21,7 +21,7 @@ class BaseSerializer(serializers.ModelSerializer):
                                     up if `ref_serializer` is False. If `ref_fields` is not provided,
                                     all fields will be returned.
     :param List[str] fields:        Additional kwargs 'field' that controls which fields to include.
-                                    NOTE: his overrides both `masked` and `ref_serializer` logic.
+                                    NOTE: This overrides both `masked` and `ref_serializer` logic.
     """
 
     ref_fields: List[str] = []
@@ -30,12 +30,18 @@ class BaseSerializer(serializers.ModelSerializer):
     ref_serializer: bool = False
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
+
         # handle 'fields' keyword argument first since
         # it overrides the other logic
         fields: Optional[List[str]] = kwargs.pop("fields", None)
 
-        # Save the original kwargs
-        self.kwargs = kwargs
+        # handle masked serializer
+        masked = kwargs.pop("masked", self.masked)
+        masked_fields = getattr(self.Meta, "masked_fields", self.masked_fields)
+
+        # handle ref serializer
+        ref_serializer = kwargs.pop("ref_serializer", self.ref_serializer)
+        ref_fields = getattr(self.Meta, "ref_fields", self.ref_fields)
 
         # If fields is explicitly passed, it overrides masked and ref_serializer logic
         if fields is not None:
@@ -45,16 +51,12 @@ class BaseSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name)
         else:
             # if masked serializer, remove masked fields
-            self.masked = kwargs.pop("masked", self.masked)
-            masked_fields = getattr(self.Meta, "masked_fields", self.masked_fields)
-            if self.masked:
+            if masked:
                 for field in masked_fields:
                     self.fields.pop(field, None)
 
             # if ref serializer, remove ref fields
-            self.ref_serializer = kwargs.pop("ref_serializer", self.ref_serializer)
-            ref_fields = getattr(self.Meta, "ref_fields", self.ref_fields)
-            if self.ref_serializer:
+            if ref_serializer:
                 for field in ref_fields:
                     self.fields.pop(field, None)
 
