@@ -29,8 +29,6 @@ class BaseSerializer(serializers.ModelSerializer):
     fields: Dict[str, serializers.Field]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        self.kwargs = kwargs  # Save kwargs for later
-
         # handle 'fields' keyword argument
         fields: Optional[List[str]] = kwargs.pop("fields", None)
 

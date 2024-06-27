@@ -56,12 +56,12 @@ TODO
 
 
 #### Django tests!!!
-- base serializer
-- api response renderer
-- 
 - impove ci
 -
-- get api response hanlder test to 100%
+- get coverage to 100%
+-
+- double check all tests are actually solid
+    - any edge cases?
 
 
 
@@ -75,6 +75,7 @@ TODO
         - `ApiResponse`
         - `ApiResponseHandler`
         - `ApiResponseRenderer`
+    - CI improvements and test coverage vastly improved
 #### TODO
 
 -------------------------------------------------------
