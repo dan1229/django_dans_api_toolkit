@@ -45,7 +45,7 @@ TODO
 
 
 
-#### package requirements
+#### package requirements improvements and updates
 - clean them up a bit
     - require higher python version?
 - add support for django 5 and higher
@@ -57,6 +57,7 @@ TODO
 
 #### Django tests!!!
 - impove ci
+    - ask the chat
 -
 - get coverage to 100%
 -
