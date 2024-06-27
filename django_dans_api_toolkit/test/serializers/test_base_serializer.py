@@ -1,5 +1,6 @@
 from django.test import TestCase
-from .models import SampleModel, SampleSerializer
+from .models import SampleModel
+from .serializers import SampleSerializer
 
 
 class BaseSerializerTestCase(TestCase):
@@ -22,7 +23,7 @@ class BaseSerializerTestCase(TestCase):
     def test_ref_serialization(self):
         serializer = SampleSerializer(self.instance, ref_serializer=True)
         data = serializer.data
-        self.assertEqual(set(data.keys()), {"id", "field1", "field2"})
+        self.assertEqual(set(data.keys()), {"id", "field3"})
 
     def test_custom_fields_serialization(self):
         serializer = SampleSerializer(self.instance, fields=["field1", "field3"])
@@ -32,4 +33,4 @@ class BaseSerializerTestCase(TestCase):
     def test_combined_masked_and_ref_serialization(self):
         serializer = SampleSerializer(self.instance, masked=True, ref_serializer=True)
         data = serializer.data
-        self.assertEqual(set(data.keys()), {"id", "field1", "field2"})
+        self.assertEqual(set(data.keys()), {"id", "field3"})
