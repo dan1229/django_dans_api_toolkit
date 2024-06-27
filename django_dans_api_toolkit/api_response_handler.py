@@ -34,11 +34,9 @@ class ApiResponseHandler:
         self,
         message_error: str = "Error. Please try again later.",
         message_success: str = "Successfully completed request.",
-        print_log: bool = True,
     ):
         self.message_error = message_error
         self.message_success = message_success
-        self.print_log = print_log
 
     @staticmethod
     def _format_response(
@@ -67,19 +65,15 @@ class ApiResponseHandler:
             api_response.extras = response.data
         return Response(api_response.dict(), status=status)
 
-    def _handle_logging(self, msg: str, print_log: Optional[bool] = None) -> None:
+    def _handle_logging(self, msg: str, print_log: bool) -> None:
         """Internal function to handle logging for responses handled by this class.
 
         Args:
             print_log (boolean): Whether or not to actually print the message.
             msg (str): Message to print.
         """
-        if print_log is None:  # print_log not passed, go by default
-            if self.print_log:
-                LOGGER_DJANGO.error(msg)
-        else:  # print_log passed, go by that
-            if print_log:
-                LOGGER_DJANGO.error(msg)
+        if print_log:
+            LOGGER_DJANGO.error(msg)
 
     #
     # RESPONSE SUCCESS
