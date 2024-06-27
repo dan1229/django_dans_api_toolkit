@@ -86,6 +86,8 @@ Error updating user profile. - {'profile_image': [ErrorDetail(string='Upload a v
 
 
 ### [1.0.0] - 2024-MM-DD
+- Fix weird error fields handling
+    - Will use field errors if no 'better error message'
 #### TODO
 
 -------------------------------------------------------
