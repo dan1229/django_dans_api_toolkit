@@ -10,7 +10,17 @@ class BaseSerializerTestCase(TestCase):
         )
 
     def test_default_serialization(self):
+        # note 'masked' is true by default
         serializer = SampleSerializer(self.instance)
+        data = serializer.data
+        self.assertIn("id", data)
+        self.assertIn("field1", data)
+        self.assertIn("field2", data)
+        self.assertNotIn("field3", data)
+        self.assertIn("field4", data)
+
+    def test_not_masked_serialization(self):
+        serializer = SampleSerializer(self.instance, masked=False)
         data = serializer.data
         self.assertIn("id", data)
         self.assertIn("field1", data)
@@ -27,13 +37,22 @@ class BaseSerializerTestCase(TestCase):
         self.assertNotIn("field3", data)
         self.assertIn("field4", data)
 
+    def test_not_ref_serialization(self):
+        serializer = SampleSerializer(self.instance, ref_serializer=False)
+        data = serializer.data
+        self.assertIn("id", data)
+        self.assertIn("field1", data)
+        self.assertIn("field2", data)
+        self.assertNotIn("field3", data)
+        self.assertIn("field4", data)
+
     def test_ref_serialization(self):
         serializer = SampleSerializer(self.instance, ref_serializer=True)
         data = serializer.data
         self.assertIn("id", data)
         self.assertNotIn("field1", data)
         self.assertNotIn("field2", data)
-        self.assertIn("field3", data)
+        self.assertNotIn("field3", data)
         self.assertIn("field4", data)
 
     def test_custom_fields_serialization(self):
