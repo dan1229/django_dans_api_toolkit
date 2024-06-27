@@ -1,6 +1,5 @@
 from django.test import TestCase
-from .models import SampleModel
-from .serializers import SampleSerializer
+from .models import SampleModel, SampleSerializer
 
 
 class BaseSerializerTestCase(TestCase):
