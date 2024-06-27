@@ -163,7 +163,7 @@ class ApiResponseHandler:
 
         # Figure out logging / error
 
-        # error NOT passed, pass as this is probably not intended to be logged
+        # error PASSED, this means we are potentially logging something
         if error:
             if message and message != error:  # message and error different, log both
                 self._handle_logging(f"{message} - {error}", print_log)
