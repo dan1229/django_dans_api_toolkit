@@ -111,9 +111,9 @@ class ApiResponseHandler:
     def response_error(
         self,
         error: Optional[Union[str, Exception]] = None,
-        error_fields: Optional[Dict[Any, Any]] = None,
+        error_fields: Optional[dict[Any, Any]] = None,
         message: Optional[str] = None,
-        results: Optional[Union[object, Dict[Any, Any], List[Any]]] = None,
+        results: Optional[Union[object, dict[Any, Any], list[Any]]] = None,
         response: Optional[Response] = None,
         status: Optional[int] = HTTP_400_BAD_REQUEST,
         print_log: Optional[bool] = True,
@@ -168,6 +168,9 @@ class ApiResponseHandler:
                 self._handle_logging(f"{message} - {error}", print_log)
             else:  # error and message both exist and are the same
                 self._handle_logging(str(error), print_log)
+        # if no error, but message exists, log it
+        elif message:
+            self._handle_logging(message, print_log)
 
         # Handle response
         return self._format_response(
