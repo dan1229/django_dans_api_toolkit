@@ -26,6 +26,7 @@ class BaseSerializer(serializers.ModelSerializer):
     masked_fields: List[str] = []
     masked: bool = True
     ref_serializer: bool = False
+    fields: Dict[str, serializers.Field]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         # handle 'fields' keyword argument
