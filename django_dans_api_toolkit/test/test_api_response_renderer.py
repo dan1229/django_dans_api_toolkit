@@ -150,6 +150,7 @@ class ApiResponseRendererTestCase(TestCase):
         )
 
         self.assertIn(b'"key":"value"', rendered_content)
+        self.assertIn(b'"message":"An unexpected error occurred."', rendered_content)
 
     def test_render_with_error_and_no_message(self):
         request = self.factory.get("/mock-view/")

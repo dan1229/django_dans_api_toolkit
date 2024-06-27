@@ -19,7 +19,8 @@
 
 
 
-TODO
+#### get coverage to 100%
+- yup
 
 
 
@@ -59,7 +60,6 @@ TODO
 - impove ci
     - ask the chat
 -
-- get coverage to 100%
 -
 - double check all tests are actually solid
     - any edge cases?
