@@ -1,11 +1,9 @@
 from django.test import TestCase, RequestFactory
-from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 
 from ..api_response_renderer import ApiResponseRenderer
-from ..api_response_handler import ApiResponseHandler
 
 
 class MockView(APIView):
