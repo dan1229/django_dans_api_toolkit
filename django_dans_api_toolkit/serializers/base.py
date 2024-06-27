@@ -36,9 +36,6 @@ class BaseSerializer(serializers.ModelSerializer):
         # Save the original kwargs
         self.kwargs = kwargs
 
-        # Instantiate the superclass normally
-        super().__init__(*args, **kwargs)
-
         # If fields is explicitly passed, it overrides masked and ref_serializer logic
         if fields is not None:
             allowed = set(fields)
@@ -59,3 +56,8 @@ class BaseSerializer(serializers.ModelSerializer):
             if self.ref_serializer:
                 for field in ref_fields:
                     self.fields.pop(field, None)
+
+        # Instantiate the superclass normally
+        # NOTE: the placement of this (after the ref/masked logic)
+        # is VERY important
+        super().__init__(*args, **kwargs)
