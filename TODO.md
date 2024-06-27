@@ -67,6 +67,12 @@ TODO
 ### [1.0.0] - 2024-06-DD
 - Fix weird error fields handling
     - Will use field errors if no 'better error message'
+- TESTS!!!
+    - Added tests for all major components including:
+        - `BaseSerializer`
+        - `ApiResponse`
+        - `ApiResponseHandler`
+        - `ApiResponseRenderer`
 #### TODO
 
 -------------------------------------------------------
