@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, Dict, List
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from rest_framework.response import Response
@@ -8,7 +8,6 @@ from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from .api_response import ApiResponse
 
 LOGGER_DJANGO = logging.getLogger("django")
-
 
 """
 ============================================================================================ #
@@ -44,10 +43,10 @@ class ApiResponseHandler:
     @staticmethod
     def _format_response(
         response: Optional[Response] = None,
-        results: Optional[Union[object, dict[Any, Any], list[Any]]] = None,
+        results: Optional[Union[object, Dict[Any, Any], List[Any]]] = None,
         message: Optional[str] = None,
         status: Optional[int] = None,
-        error_fields: Optional[dict[Any, Any]] = None,
+        error_fields: Optional[Dict[Any, Any]] = None,
     ) -> Response:
         """Internal function to format responses.
 
@@ -88,7 +87,7 @@ class ApiResponseHandler:
     def response_success(
         self,
         message: Optional[str] = None,
-        results: Optional[Union[object, dict[Any, Any], list[Any]]] = None,
+        results: Optional[Union[object, Dict[Any, Any], List[Any]]] = None,
         response: Optional[Response] = None,
         status: Optional[int] = HTTP_200_OK,
     ) -> Response:
@@ -112,9 +111,9 @@ class ApiResponseHandler:
     def response_error(
         self,
         error: Optional[Union[str, Exception]] = None,
-        error_fields: Optional[dict[Any, Any]] = None,
+        error_fields: Optional[Dict[Any, Any]] = None,
         message: Optional[str] = None,
-        results: Optional[Union[object, dict[Any, Any], list[Any]]] = None,
+        results: Optional[Union[object, Dict[Any, Any], List[Any]]] = None,
         response: Optional[Response] = None,
         status: Optional[int] = HTTP_400_BAD_REQUEST,
         print_log: Optional[bool] = True,
