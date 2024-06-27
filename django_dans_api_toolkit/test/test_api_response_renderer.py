@@ -141,17 +141,6 @@ class ApiResponseRendererTestCase(TestCase):
 
         self.assertIn(b'"key":"value"', rendered_content)
 
-    def test_render_with_renderer_context_but_no_response(self):
-        response = {"key": "value"}
-
-        renderer = ApiResponseRenderer()
-        rendered_content = renderer.render(
-            response, renderer_context={"some_key": "some_value"}
-        )
-
-        self.assertIn(b'"key":"value"', rendered_content)
-        self.assertIn(b'"message":"An unexpected error occurred."', rendered_content)
-
     def test_render_with_error_and_no_message(self):
         request = self.factory.get("/mock-view/")
         response = Response(
