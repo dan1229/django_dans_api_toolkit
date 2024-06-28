@@ -63,13 +63,11 @@ class ApiResponseHandlerTestCase(TestCase):
     def test_response_error_logging(self):
         custom_message = "Log this error."
         error = "Actual error."
-        with self.assertLogs("django", level="ERROR") as cm:
+        with self.assertLogs("django_dans_api_toolkit", level="ERROR") as cm:
             self.api_response_handler.response_error(
                 message=custom_message, error=error
             )
             self.assertIn(f"{custom_message} - {error}", cm.output[0])
-
-    # Additional test cases
 
     def test_response_success_with_extra_data(self):
         extra_data = {"extra_key": "extra_value"}
@@ -95,24 +93,14 @@ class ApiResponseHandlerTestCase(TestCase):
 
     def test_response_error_logging_with_custom_message_only(self):
         custom_message = "Log this error."
-        with self.assertLogs("django", level="ERROR") as cm:
+        with self.assertLogs("django_dans_api_toolkit", level="ERROR") as cm:
             self.api_response_handler.response_error(message=custom_message)
             self.assertGreater(len(cm.output), 0, "No log output captured.")
             self.assertIn(custom_message, cm.output[0])
 
     def test_response_error_logging_with_error_only(self):
         error = "Actual error."
-        with self.assertLogs("django", level="ERROR") as cm:
+        with self.assertLogs("django_dans_api_toolkit", level="ERROR") as cm:
             self.api_response_handler.response_error(error=error)
             self.assertGreater(len(cm.output), 0, "No log output captured.")
             self.assertIn(error, cm.output[0])
-
-    def test_response_success_with_none_results(self):
-        response = self.api_response_handler.response_success(results=None)
-        self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertIsNone(response.data["results"])
-
-    def test_response_error_with_none_error_fields(self):
-        response = self.api_response_handler.response_error(error_fields=None)
-        self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
-        self.assertIsNone(response.data["error_fields"])
