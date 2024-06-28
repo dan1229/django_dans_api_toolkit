@@ -6,50 +6,62 @@
 
 ## Description
 
-A Django app to help make building APIs great.
+**Django Dans API Toolkit** is a Django app to help make building APIs great.
 
-This app is meant to be a collection of tools to help with common API tasks, and is not meant to be a full-fledged API solution. It is meant to be used in conjunction with Django Rest Framework, and is not a replacement for it.
+It provides a collection of tools for common API tasks, intended to complement Django Rest Framework (DRF) rather than replace it.
 
 [Available on PyPi](https://pypi.org/project/django-dans-api-toolkit/)
 
-## Tools Available
+## Features
 
-This app is meant to be a collection of tools to help with common API tasks, and is not meant to be a full-fledged API solution. It is meant to be used in conjunction with Django Rest Framework, and is not a replacement for it.
+The toolkit includes:
+- **API Response Handler** (`api_response_handler.py`): Standardizes API response formats.
+- **API Response Renderer** (`api_response_renderer.py`): Ensures consistent response rendering across your APIs.
+- **Base Serializer** (`serializers/base.py`): Simplifies serializer creation with masking and reference functionality.
 
-Some of these tools include:
-- API response handler - `api_response_handler.py`
-- API response renderer - `api_response_renderer.py`
-- Base serializer - `serializers/base.py`
+## Quick Start
 
+### Installation
 
-## Quick start
+1. **Install the package via pip:**
 
-1. Install the package via pip:
+    ```bash
+    pip install django-dans-api-toolkit
+    ```
 
-```bash
-pip install django-dans-api-toolkit
-```
+2. **Add `django_dans_api_toolkit` to your `INSTALLED_APPS` setting:**
 
-2. Add `django_dans_api_toolkit` to your INSTALLED_APPS setting like this:
+    ```python
+    INSTALLED_APPS = [
+        ...
+        'django_dans_api_toolkit',
+    ]
+    ```
+
+3. **Run migrations to update your database schema:**
+
+    ```bash
+    python manage.py migrate
+    ```
+
+4. **Use the provided tools in your views and serializers.**
+
+### Example Usage
+
+#### API Response Handler
 
 ```python
-INSTALLED_APPS = [
-	...
-	'django_dans_api_toolkit',
-]
+from django_dans_api_toolkit.api_response_handler import ApiResponseHandler
+
+def my_view(request):
+    handler = ApiResponseHandler()
+    data = {"key": "value"}
+    return handler.response_success(results=data)
 ```
 
-3. Run `python manage.py migrate` to update your database schema.
 
-4. Use the API endpoints, in code or your Django admin portal.
+#### API Response Renderer
 
-### Requirements
-
-TODO validate these
-- Python 3.10 - 3.11
-- Django 3.1 or higher
-- Django Rest Framework
-  - **NOTE:** not only must you have this installed, you must have set `DEFAULT_AUTHENTICATION_CLASSES` and `DEFAULT_PAGINATION_CLASS` in your `settings.py` to work with the APIs properly. An example config would be:
 
 ```python
 REST_FRAMEWORK = {
@@ -60,6 +72,14 @@ REST_FRAMEWORK = {
     ),
 }
 ```
+
+
+### Requirements
+- Python 3.10 - 3.11
+- Django 3.1 or higher
+- Django Rest Framework
+  - **NOTE:** not only must you have this installed, you must have set `DEFAULT_AUTHENTICATION_CLASSES` and `DEFAULT_PAGINATION_CLASS` in your `settings.py` to work with the APIs properly. An example config would be:
+
 
 
 -------------------------------------------------------

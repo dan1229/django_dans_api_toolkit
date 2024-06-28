@@ -34,15 +34,6 @@
 
 
 
-#### doc improvements
-- docs/tools available
-- readme should have some overview of the tools available
-- badges?
-    - pipeline statuses
-    - coverage?
-- pypi link
-
-
 
 #### logging improvements
 - file name/lines would be great
