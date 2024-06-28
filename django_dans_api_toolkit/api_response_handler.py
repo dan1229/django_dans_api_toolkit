@@ -4,10 +4,11 @@ from django.db import IntegrityError
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 import logging
+import inspect
 
 from .api_response import ApiResponse
 
-LOGGER_DJANGO = logging.getLogger("django")
+DEFAULT_LOGGER = logging.getLogger("django_dans_api_toolkit")
 
 """
 ============================================================================================ #
@@ -34,9 +35,11 @@ class ApiResponseHandler:
         self,
         message_error: str = "Error. Please try again later.",
         message_success: str = "Successfully completed request.",
+        logger: Optional[logging.Logger] = None,
     ):
         self.message_error = message_error
         self.message_success = message_success
+        self.logger = logger or DEFAULT_LOGGER
 
     @staticmethod
     def _format_response(
@@ -73,7 +76,10 @@ class ApiResponseHandler:
             msg (str): Message to print.
         """
         if print_log:
-            LOGGER_DJANGO.error(msg)
+            caller_frame = inspect.stack()[2]
+            caller_info = f"{caller_frame.filename}:{caller_frame.lineno} in {caller_frame.function}"
+            full_msg = f"{msg} | {caller_info}"
+            self.logger.error(full_msg)
 
     #
     # RESPONSE SUCCESS
