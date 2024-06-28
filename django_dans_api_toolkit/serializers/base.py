@@ -31,7 +31,12 @@ class BaseSerializer(serializers.ModelSerializer):
     fields: Dict[str, serializers.Field]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        self.kwargs = kwargs  # Save kwargs for later
+        # It's important to pop the kwargs before calling the superclass
+        # since the superclass will throw an error if it receives an
+        # unexpected keyword argument
+        self.kwargs = kwargs
+        self.masked = kwargs.pop("masked", self.masked)
+        self.ref_serializer = kwargs.pop("ref_serializer", self.ref_serializer)
 
         # handle 'fields' keyword argument first since
         # it overrides the other logic
@@ -43,20 +48,18 @@ class BaseSerializer(serializers.ModelSerializer):
             existing = set(self.fields.keys())
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
+        else:
+            # if masked serializer, remove masked fields
+            masked_fields = getattr(self.Meta, "masked_fields", self.masked_fields)
+            if self.masked:
+                for field in masked_fields:
+                    self.fields.pop(field, None)
 
-        # if masked serializer, remove masked fields
-        self.masked = kwargs.pop("masked", self.masked)
-        masked_fields = getattr(self.Meta, "masked_fields", self.masked_fields)
-        if self.masked:
-            for field in masked_fields:
-                self.fields.pop(field, None)
-
-        # if ref serializer, remove ref fields
-        self.ref_serializer = kwargs.pop("ref_serializer", self.ref_serializer)
-        ref_fields = getattr(self.Meta, "ref_fields", self.ref_fields)
-        if self.ref_serializer:
-            for field in ref_fields:
-                self.fields.pop(field, None)
+            # if ref serializer, remove ref fields
+            ref_fields = getattr(self.Meta, "ref_fields", self.ref_fields)
+            if self.ref_serializer:
+                for field in ref_fields:
+                    self.fields.pop(field, None)
 
         # Instantiate the superclass normally
         # NOTE: the placement of this is important
