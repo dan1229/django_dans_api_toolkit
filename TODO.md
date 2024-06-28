@@ -61,14 +61,6 @@
 
 
 
-#### Django tests!!!
-- test on get twenty
-    - figure out why not working
-        - revert to base and work backwards - issue is in this code not get twenty
-- remove egg.info folder
-
-
-
 ### [1.0.0] - 2024-06-DD
 - Fix weird error fields handling
     - Will use field errors if no 'better error message'
