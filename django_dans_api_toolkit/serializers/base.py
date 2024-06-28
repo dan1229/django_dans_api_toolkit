@@ -37,34 +37,29 @@ class BaseSerializer(serializers.ModelSerializer):
         # it overrides the other logic
         fields: Optional[List[str]] = kwargs.pop("fields", None)
 
-        # if fields is provided, remove masked and ref_serializer
         if fields is not None:
-            self.masked = False
-            self.ref_serializer = False
+            # Drop any fields that are not specified in the `fields` argument
+            allowed = set(fields)
+            existing = set(self.fields.keys())
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
+        else:
+            # if masked serializer, remove masked fields
+            self.masked = kwargs.pop("masked", self.masked)
+            masked_fields = getattr(self.Meta, "masked_fields", self.masked_fields)
+            if self.masked:
+                for field in masked_fields:
+                    self.fields.pop(field, None)
 
-        # if masked serializer, remove masked fields
-        self.masked = kwargs.pop("masked", self.masked)
-        masked_fields = getattr(self.Meta, "masked_fields", self.masked_fields)
-        if self.masked:
-            for field in masked_fields:
-                self.fields.pop(field, None)
-
-        # if ref serializer, remove ref fields
-        self.ref_serializer = kwargs.pop("ref_serializer", self.ref_serializer)
-        ref_fields = getattr(self.Meta, "ref_fields", self.ref_fields)
-        if self.ref_serializer:
-            for field in ref_fields:
-                self.fields.pop(field, None)
+            # if ref serializer, remove ref fields
+            self.ref_serializer = kwargs.pop("ref_serializer", self.ref_serializer)
+            ref_fields = getattr(self.Meta, "ref_fields", self.ref_fields)
+            if self.ref_serializer:
+                for field in ref_fields:
+                    self.fields.pop(field, None)
 
         # Instantiate the superclass normally
         # NOTE: the placement of this is important
         # since we want to remove fields before
         # the superclass is instantiated
         super().__init__(*args, **kwargs)
-
-        # Drop any fields that are not specified in the `fields` argument
-        if fields is not None:
-            allowed = set(fields)
-            existing = set(self.fields.keys())
-            for field_name in existing - allowed:
-                self.fields.pop(field_name)
