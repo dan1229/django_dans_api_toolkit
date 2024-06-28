@@ -29,27 +29,9 @@
 
 
 
------
-### 1.0.0
+### [1.1.0] - 2024-MM-DD
+- TODO
 
-
-
-
-### [1.0.0] - 2024-06-28
-- Fix weird error fields handling
-    - Will use field errors if no 'better error message'
-- TESTS!!!
-    - Added tests for all major components including:
-        - `BaseSerializer`
-        - `ApiResponse`
-        - `ApiResponseHandler`
-        - `ApiResponseRenderer`
-    - CI improvements and test coverage vastly improved
-    - Almost 100% test coverage!!!
-- Updated package requirements
-    - Django 5.0 support
-    - Remove support for Python 3.8/9
-- Improved API logging
 
 -------------------------------------------------------
 
