@@ -35,15 +35,7 @@
 
 
 
-#### logging improvements
-- file name/lines would be great
-    - i.e., which api failed not the api_response_handler itself please
-- way to hook into existing loggers or use 'new' one?
-
-
-
-
-### [1.0.0] - 2024-06-DD
+### [1.0.0] - 2024-06-28
 - Fix weird error fields handling
     - Will use field errors if no 'better error message'
 - TESTS!!!
@@ -57,7 +49,7 @@
 - Updated package requirements
     - Django 5.0 support
     - Remove support for Python 3.8/9
-#### TODO
+- Improved API logging
 
 -------------------------------------------------------
 
