@@ -42,15 +42,6 @@
 
 
 
-#### package requirements improvements and updates
-- clean them up a bit
-    - require higher python version?
-- add support for django 5 and higher
-    - add to ci tests
-- update docs
-
-
-
 
 ### [1.0.0] - 2024-06-DD
 - Fix weird error fields handling
@@ -65,6 +56,7 @@
     - Almost 100% test coverage!!!
 - Updated package requirements
     - Django 5.0 support
+    - Remove support for Python 3.8/9
 #### TODO
 
 -------------------------------------------------------
