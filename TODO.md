@@ -24,6 +24,11 @@
 
 
 
+#### pypi test cd script
+- upload to test py on each push
+
+
+
 -----
 ### 1.0.0
 
@@ -57,12 +62,10 @@
 
 
 #### Django tests!!!
-- double check all tests are actually solid
-    - any edge cases?
-- test on 'client' project somehow?
-    - pre release or something?
-        - actually just release like 0.99.0 or is there a better way
-
+- test on get twenty
+    - figure out why not working
+        - revert to base and work backwards - issue is in this code not get twenty
+- remove egg.info folder
 
 
 
