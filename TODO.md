@@ -71,6 +71,8 @@
         - `ApiResponseHandler`
         - `ApiResponseRenderer`
     - CI improvements and test coverage vastly improved
+    - Almost 100% test coverage!!!
+- Updated package requirements
 #### TODO
 
 -------------------------------------------------------
