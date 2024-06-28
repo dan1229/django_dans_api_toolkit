@@ -1,14 +1,13 @@
-import logging
-from typing import Any, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+import logging
 
 from .api_response import ApiResponse
 
 LOGGER_DJANGO = logging.getLogger("django")
-
 
 """
 ============================================================================================ #
@@ -35,19 +34,17 @@ class ApiResponseHandler:
         self,
         message_error: str = "Error. Please try again later.",
         message_success: str = "Successfully completed request.",
-        print_log: bool = True,
     ):
         self.message_error = message_error
         self.message_success = message_success
-        self.print_log = print_log
 
     @staticmethod
     def _format_response(
         response: Optional[Response] = None,
-        results: Optional[Union[object, dict[Any, Any], list[Any]]] = None,
+        results: Optional[Union[object, Dict[Any, Any], List[Any]]] = None,
         message: Optional[str] = None,
         status: Optional[int] = None,
-        error_fields: Optional[dict[Any, Any]] = None,
+        error_fields: Optional[Dict[Any, Any]] = None,
     ) -> Response:
         """Internal function to format responses.
 
@@ -68,27 +65,23 @@ class ApiResponseHandler:
             api_response.extras = response.data
         return Response(api_response.dict(), status=status)
 
-    def _handle_logging(self, msg: str, print_log: Optional[bool] = None) -> None:
+    def _handle_logging(self, msg: str, print_log: bool) -> None:
         """Internal function to handle logging for responses handled by this class.
 
         Args:
             print_log (boolean): Whether or not to actually print the message.
             msg (str): Message to print.
         """
-        if print_log is None:  # print_log not passed, go by default
-            if self.print_log:
-                LOGGER_DJANGO.error(msg)
-        else:  # print_log passed, go by that
-            if print_log:
-                LOGGER_DJANGO.error(msg)
+        if print_log:
+            LOGGER_DJANGO.error(msg)
 
     #
-    # RESPONSES
+    # RESPONSE SUCCESS
     #
     def response_success(
         self,
         message: Optional[str] = None,
-        results: Optional[Union[object, dict[Any, Any], list[Any]]] = None,
+        results: Optional[Union[object, Dict[Any, Any], List[Any]]] = None,
         response: Optional[Response] = None,
         status: Optional[int] = HTTP_200_OK,
     ) -> Response:
@@ -109,12 +102,15 @@ class ApiResponseHandler:
             response=response, results=results, message=message, status=status
         )
 
+    #
+    # RESPONSE ERROR
+    #
     def response_error(
         self,
         error: Optional[Union[str, Exception]] = None,
-        error_fields: Optional[dict[Any, Any]] = None,
+        error_fields: Optional[Dict[Any, Any]] = None,
         message: Optional[str] = None,
-        results: Optional[Union[object, dict[Any, Any], list[Any]]] = None,
+        results: Optional[Union[object, Dict[Any, Any], List[Any]]] = None,
         response: Optional[Response] = None,
         status: Optional[int] = HTTP_400_BAD_REQUEST,
         print_log: Optional[bool] = True,
@@ -169,6 +165,9 @@ class ApiResponseHandler:
                 self._handle_logging(f"{message} - {error}", print_log)
             else:  # error and message both exist and are the same
                 self._handle_logging(str(error), print_log)
+        # if no error, but message exists, log it
+        elif message:
+            self._handle_logging(message, print_log)
 
         # Handle response
         return self._format_response(

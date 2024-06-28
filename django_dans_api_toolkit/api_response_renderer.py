@@ -1,4 +1,4 @@
-from typing import Any, Mapping, Optional
+from typing import Any, Dict, Mapping, Optional
 from rest_framework.renderers import JSONRenderer
 
 from .api_response_handler import ApiResponseHandler
@@ -20,7 +20,7 @@ API RESPONSE RENDERER ==========================================================
 class ApiResponseRenderer(JSONRenderer):
     def render(
         self,
-        data: dict[Any, Any],
+        data: Dict[Any, Any],
         accepted_media_type: Optional[str] = None,
         renderer_context: Optional[Mapping[str, Any]] = None,
     ) -> Any:

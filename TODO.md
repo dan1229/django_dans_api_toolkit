@@ -19,7 +19,13 @@
 
 
 
-TODO
+#### get coverage to 100%
+- yup
+
+
+
+#### pypi test cd script
+- upload to test py on each push
 
 
 
@@ -40,11 +46,12 @@ TODO
 
 #### logging improvements
 - file name/lines would be great
-- get rid of ALL prints and stuff
+    - i.e., which api failed not the api_response_handler itself please
+- way to hook into existing loggers or use 'new' one?
 
 
 
-#### package requirements
+#### package requirements improvements and updates
 - clean them up a bit
     - require higher python version?
 - add support for django 5 and higher
@@ -54,19 +61,16 @@ TODO
 
 
 
-#### Django tests!!!
-- base serializer
-- api response
-- api response handler
-- api response renderer
-- 
-- impove ci
-
-
-
 ### [1.0.0] - 2024-06-DD
 - Fix weird error fields handling
     - Will use field errors if no 'better error message'
+- TESTS!!!
+    - Added tests for all major components including:
+        - `BaseSerializer`
+        - `ApiResponse`
+        - `ApiResponseHandler`
+        - `ApiResponseRenderer`
+    - CI improvements and test coverage vastly improved
 #### TODO
 
 -------------------------------------------------------
