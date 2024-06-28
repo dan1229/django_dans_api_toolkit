@@ -34,29 +34,11 @@
 
 
 
-#### doc improvements
-- docs/tools available
-- readme should have some overview of the tools available
-- badges?
-    - pipeline statuses
-    - coverage?
-- pypi link
-
-
 
 #### logging improvements
 - file name/lines would be great
     - i.e., which api failed not the api_response_handler itself please
 - way to hook into existing loggers or use 'new' one?
-
-
-
-#### package requirements improvements and updates
-- clean them up a bit
-    - require higher python version?
-- add support for django 5 and higher
-    - add to ci tests
-- update docs
 
 
 
@@ -71,6 +53,10 @@
         - `ApiResponseHandler`
         - `ApiResponseRenderer`
     - CI improvements and test coverage vastly improved
+    - Almost 100% test coverage!!!
+- Updated package requirements
+    - Django 5.0 support
+    - Remove support for Python 3.8/9
 #### TODO
 
 -------------------------------------------------------
