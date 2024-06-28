@@ -69,6 +69,28 @@ class ApiResponseHandlerTestCase(TestCase):
             )
             self.assertIn(f"{custom_message} - {error}", cm.output[0])
 
+    def test_response_success_with_extra_data(self):
+        extra_data = {"extra_key": "extra_value"}
+        response = self.api_response_handler.response_success(results=extra_data)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertEqual(response.data["results"], extra_data)
+
+    def test_response_error_with_results(self):
+        results = {"error_key": "error_value"}
+        response = self.api_response_handler.response_error(results=results)
+        self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["results"], results)
+
+    def test_response_success_with_mixed_results(self):
+        results = {
+            "key": "value",
+            "list": [1, 2, 3],
+            "dict": {"inner_key": "inner_value"},
+        }
+        response = self.api_response_handler.response_success(results=results)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertEqual(response.data["results"], results)
+
     def test_response_error_logging_with_custom_message_only(self):
         custom_message = "Log this error."
         with self.assertLogs("django_dans_api_toolkit", level="ERROR") as cm:
