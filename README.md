@@ -60,8 +60,26 @@ def my_view(request):
 ```
 
 
+#### Base Serializer
+
+```python
+from django_dans_api_toolkit.serializers.base import BaseSerializer
+from myapp.models import MyModel
+
+class MyModelSerializer(BaseSerializer):
+    class Meta:
+        model = MyModel
+        fields = '__all__'
+        ref_fields = ['field1', 'field2']
+        masked_fields = ['field3']
+```
+
+
 #### API Response Renderer
 
+Ensure `DEFAULT_AUTHENTICATION_CLASSES` and `DEFAULT_PAGINATION_CLASS` are set in your settings.py for proper API functionality. Set the renderer itself as well.
+
+Example configuration:
 
 ```python
 REST_FRAMEWORK = {
