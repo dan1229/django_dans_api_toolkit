@@ -28,7 +28,7 @@ class BaseSerializer(serializers.ModelSerializer):
     masked_fields: List[str] = []
     masked: bool = True
     ref_serializer: bool = False
-    fields: Dict[str, serializers.Field]
+    fields: Dict[str, serializers.Field]  # type: ignore[type-arg]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         # It's important to pop the kwargs before calling the superclass

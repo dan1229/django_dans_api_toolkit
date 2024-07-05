@@ -29,7 +29,7 @@ class ApiResponseRendererTestCase(TestCase):
 
         renderer = ApiResponseRenderer()
         rendered_content = renderer.render(
-            response.data, renderer_context={"response": response}
+            response.data, renderer_context={"response": response}  # type: ignore[attr-defined]
         )
 
         self.assertIn(b'"message":"Not found"', rendered_content)
@@ -42,7 +42,7 @@ class ApiResponseRendererTestCase(TestCase):
 
         renderer = ApiResponseRenderer()
         rendered_content = renderer.render(
-            response.data, renderer_context={"response": response}  # type: ignore[arg-type]
+            response.data, renderer_context={"response": response}  # type: ignore[attr-defined]
         )
 
         self.assertIn(b'"message":"Successfully completed request."', rendered_content)
@@ -138,7 +138,7 @@ class ApiResponseRendererTestCase(TestCase):
         response = Response({"key": "value"}, status=status.HTTP_200_OK)
 
         renderer = ApiResponseRenderer()
-        rendered_content = renderer.render(response.data)
+        rendered_content = renderer.render(response.data)  # type: ignore[arg-type]
 
         self.assertIn(b'"key":"value"', rendered_content)
 
