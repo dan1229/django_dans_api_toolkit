@@ -6,7 +6,7 @@ class ApiResponseTestCase(TestCase):
 
     def test_initialization_with_defaults(self) -> None:
         response = ApiResponse()
-        self.assertIsNone(response.status)
+        self.assertEqual(response.status, 400)
         self.assertIsNone(response.message)
         self.assertIsNone(response.results)
         self.assertIsNone(response.error_fields)
@@ -38,7 +38,7 @@ class ApiResponseTestCase(TestCase):
         response_dict = response.dict()
 
         expected_dict = {
-            "status": None,
+            "status": 400,
             "message": None,
             "results": None,
             "error_fields": None,
@@ -77,7 +77,22 @@ class ApiResponseTestCase(TestCase):
         response_dict = response.dict()
 
         expected_dict = {
-            "status": None,
+            "status": 400,
+            "message": None,
+            "results": None,
+            "error_fields": None,
+            "extra1": "value1",
+            "extra2": "value2",
+        }
+
+        self.assertEqual(response_dict, expected_dict)
+
+    def test_dict_method_with_dict_extras(self) -> None:
+        response = ApiResponse(extras={"extra1": "value1", "extra2": "value2"})
+        response_dict = response.dict()
+
+        expected_dict = {
+            "status": 400,
             "message": None,
             "results": None,
             "error_fields": None,

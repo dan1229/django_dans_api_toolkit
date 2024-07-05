@@ -30,6 +30,7 @@ class ApiResponse:
         **kwargs: Any
     ) -> None:
         if not status:
+            # if status is not provided, we assume error
             status = 400
         self.status = status
         self.message = message

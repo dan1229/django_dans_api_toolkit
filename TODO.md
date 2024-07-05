@@ -29,9 +29,9 @@
 
 
 
-#### mypy types ci script
-- run mypy on each push
-
+#### update readme and docs?
+- mypy?
+- more badges?
 
 
 ### [1.1.0] - 2024-MM-DD
