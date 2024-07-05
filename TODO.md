@@ -29,6 +29,11 @@
 
 
 
+#### mypy types ci script
+- run mypy on each push
+
+
+
 ### [1.1.0] - 2024-MM-DD
 - TODO
 
