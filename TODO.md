@@ -42,10 +42,6 @@
 
 
 
-#### mypy types ci script
-- run mypy on each push
-
-
 
 ### [1.0.1] - 2024-07-04
 - Simplify `requirements.txt`
