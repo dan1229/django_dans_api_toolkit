@@ -1,3 +1,4 @@
+from typing import Any
 from django.test import TestCase, RequestFactory
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -9,10 +10,10 @@ from ..api_response_renderer import ApiResponseRenderer
 class MockView(APIView):
     renderer_classes = [ApiResponseRenderer]
 
-    def get(self, request, *args, **kwargs):
+    def get(self: Any, request: Any, *args: Any, **kwargs: Any) -> Response:
         return Response({"detail": "Not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    def post(self, request, *args, **kwargs):
+    def post(self: Any, request: Any, *args: Any, **kwargs: Any) -> Response:
         return Response({"results": {"key": "value"}})
 
 
@@ -28,7 +29,7 @@ class ApiResponseRendererTestCase(TestCase):
 
         renderer = ApiResponseRenderer()
         rendered_content = renderer.render(
-            response.data, renderer_context={"response": response}  # type: ignore[arg-type]
+            response.data, renderer_context={"response": response}
         )
 
         self.assertIn(b'"message":"Not found"', rendered_content)
