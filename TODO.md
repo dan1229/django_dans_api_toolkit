@@ -29,14 +29,27 @@
 
 
 
-#### mypy types ci script
-- run mypy on each push
-
+#### update readme and docs?
+- mypy?
+- more badges?
 
 
 ### [1.1.0] - 2024-MM-DD
 - TODO
 
+---
+### 1.0.1
+
+
+
+
+### [1.0.1] - 2024-07-04
+- Simplify `requirements.txt`
+    - Added `requirements-dev.txt` as well
+- Added MyPy type checking CI step
+- General CI clean up
+- Linting improved
+- Improved `README.md`
 
 -------------------------------------------------------
 

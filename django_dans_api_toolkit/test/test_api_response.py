@@ -4,15 +4,15 @@ from ..api_response import ApiResponse
 
 class ApiResponseTestCase(TestCase):
 
-    def test_initialization_with_defaults(self):
+    def test_initialization_with_defaults(self) -> None:
         response = ApiResponse()
-        self.assertIsNone(response.status)
+        self.assertEqual(response.status, 400)
         self.assertIsNone(response.message)
         self.assertIsNone(response.results)
         self.assertIsNone(response.error_fields)
         self.assertEqual(response.extras, {})
 
-    def test_initialization_with_values(self):
+    def test_initialization_with_values(self) -> None:
         status = 200
         message = "Success"
         results = {"key": "value"}
@@ -33,12 +33,12 @@ class ApiResponseTestCase(TestCase):
         self.assertEqual(response.error_fields, error_fields)
         self.assertEqual(response.extras, extras)
 
-    def test_dict_method_with_defaults(self):
+    def test_dict_method_with_defaults(self) -> None:
         response = ApiResponse()
         response_dict = response.dict()
 
         expected_dict = {
-            "status": None,
+            "status": 400,
             "message": None,
             "results": None,
             "error_fields": None,
@@ -46,7 +46,7 @@ class ApiResponseTestCase(TestCase):
 
         self.assertEqual(response_dict, expected_dict)
 
-    def test_dict_method_with_values(self):
+    def test_dict_method_with_values(self) -> None:
         status = 200
         message = "Success"
         results = {"key": "value"}
@@ -72,17 +72,31 @@ class ApiResponseTestCase(TestCase):
 
         self.assertEqual(response_dict, expected_dict)
 
-    def test_dict_method_with_additional_extras(self):
+    def test_dict_method_with_additional_extras(self) -> None:
         response = ApiResponse(extra1="value1", extra2="value2")
         response_dict = response.dict()
 
         expected_dict = {
-            "status": None,
+            "status": 400,
             "message": None,
             "results": None,
             "error_fields": None,
             "extra1": "value1",
             "extra2": "value2",
+        }
+
+        self.assertEqual(response_dict, expected_dict)
+
+    def test_dict_method_with_dict_extras(self) -> None:
+        response = ApiResponse(extras={"extra1": "value1", "extra2": "value2"})
+        response_dict = response.dict()
+
+        expected_dict = {
+            "status": 400,
+            "message": None,
+            "results": None,
+            "error_fields": None,
+            "extras": {"extra1": "value1", "extra2": "value2"},
         }
 
         self.assertEqual(response_dict, expected_dict)

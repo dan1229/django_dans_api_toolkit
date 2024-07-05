@@ -1,8 +1,18 @@
 # Django Dans API Toolkit
 
 [![Lint](https://github.com/dan1229/django_dans_api_toolkit/actions/workflows/lint.yml/badge.svg)](https://github.com/dan1229/django_dans_api_toolkit/actions/workflows/lint.yml)
-[![Test Python](https://github.com/dan1229/django_dans_api_toolkit/actions/workflows/test-python.yml/badge.svg)](https://github.com/dan1229/django_dans_api_toolkit/actions/workflows/test-python.yml)
+[![Test](https://github.com/dan1229/django_dans_api_toolkit/actions/workflows/python-test.yml/badge.svg)](https://github.com/dan1229/django_dans_api_toolkit/actions/workflows/python-test.yml)
+[![Types](https://github.com/dan1229/django_dans_api_toolkit/actions/workflows/python-types.yml/badge.svg)](https://github.com/dan1229/django_dans_api_toolkit/actions/workflows/python-types.yml)
 [![codecov](https://codecov.io/gh/dan1229/django_dans_api_toolkit/branch/main/graph/badge.svg?token=TL09HDQWBJ)](https://codecov.io/gh/dan1229/django_dans_api_toolkit)
+
+[![Python Versions](https://img.shields.io/pypi/pyversions/django-dans-api-toolkit.svg?color=3776AB&logo=python&logoColor=white)](https://www.python.org/)
+[![Django Versions](https://img.shields.io/pypi/djversions/django-dans-api-toolkit?color=0C4B33&logo=django&logoColor=white&label=django)](https://www.djangoproject.com/)
+[![PyPI Version](https://img.shields.io/pypi/v/django-dans-api-toolkit.svg?color=blue&logo=pypi&logoColor=white)](https://pypi.org/project/django-dans-api-toolkit/)
+[![Downloads](https://static.pepy.tech/badge/django-dans-api-toolkit/month)](https://pepy.tech/project/django-dans-api-toolkit)
+[![GitHub stars](https://img.shields.io/github/stars/dan1229/django-dans-api-toolkit?logo=github&style=flat)](https://github.com/dan1229/django-dans-api-toolkit/stargazers)
+[![License](https://img.shields.io/pypi/l/django-dans-api-toolkit.svg?color=blue)](https://github.com/dan1229/django-dans-api-toolkit/blob/main/LICENSE.txt)
+[![Codacy grade](https://img.shields.io/codacy/grade/21cb657283c04e70b56fb935277a1ad1?logo=codacy)](https://www.codacy.com/app/dan1229/django-dans-api-toolkit)
+[![Code style](https://img.shields.io/badge/code%20style-black-000000.svg?logo=python&logoColor=black)](https://github.com/psf/black)
 
 ## Description
 

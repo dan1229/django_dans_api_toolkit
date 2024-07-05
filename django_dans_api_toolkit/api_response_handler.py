@@ -138,6 +138,10 @@ class ApiResponseHandler:
         # Initialize message_res with default error message
         message_res = self.message_error
 
+        # if print_log not set, default to True
+        if print_log is None:
+            print_log = True
+
         # use provided message if available
         # this is top priority
         if message:

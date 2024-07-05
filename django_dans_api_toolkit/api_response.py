@@ -15,6 +15,12 @@ class ApiResponse:
     It does so by having properties that model the response structure you'd like.
     """
 
+    status: int
+    message: Optional[str]
+    results: Optional[Union[object, Dict[Any, Any], List[Any]]]
+    error_fields: Optional[Dict[Any, Any]]
+    extras: Union[Dict[Any, Any], object]
+
     def __init__(
         self,
         status: Optional[int] = None,
@@ -23,6 +29,9 @@ class ApiResponse:
         error_fields: Optional[Dict[Any, Any]] = None,
         **kwargs: Any
     ) -> None:
+        if not status:
+            # if status is not provided, we assume error
+            status = 400
         self.status = status
         self.message = message
         self.results = results
@@ -42,6 +51,12 @@ class ApiResponse:
             "results": self.results,
             "error_fields": self.error_fields,
         }
-        for key, value in self.extras.items():
-            res[key] = value
+
+        # extra fields to include in the response
+        if self.extras:
+            if isinstance(self.extras, dict):
+                for key, value in self.extras.items():
+                    res[key] = value
+            else:
+                res["extras"] = self.extras
         return res
