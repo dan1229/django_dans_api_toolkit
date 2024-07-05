@@ -37,20 +37,6 @@
 ### [1.1.0] - 2024-MM-DD
 - TODO
 
----
-### 1.0.1
-
-
-
-
-### [1.0.1] - 2024-07-04
-- Simplify `requirements.txt`
-    - Added `requirements-dev.txt` as well
-- Added MyPy type checking CI step
-- General CI clean up
-- Linting improved
-- Improved `README.md`
-
 -------------------------------------------------------
 
 ##### Copyright 2024 © Daniel Nazarian.

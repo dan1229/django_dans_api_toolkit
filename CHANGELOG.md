@@ -9,8 +9,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -------------------------------------------------------
-
 ## [Released]
+
+### [1.0.1] - 2024-07-05
+- Simplify `requirements.txt`
+    - Added `requirements-dev.txt` as well
+- Added MyPy type checking CI step
+- General CI clean up
+- Linting improved
+- Improved `README.md`
+
+
+### [1.0.0] - 2024-06-28
+- Fix weird error fields handling
+    - Will use field errors if no 'better error message'
+- TESTS!!!
+    - Added tests for all major components including:
+        - `BaseSerializer`
+        - `ApiResponse`
+        - `ApiResponseHandler`
+        - `ApiResponseRenderer`
+    - CI improvements and test coverage vastly improved
+    - Almost 100% test coverage!!!
+- Updated package requirements
+    - Django 5.0 support
+    - Remove support for Python 3.8/9
+- Improved API logging
 
 
 ### [0.2.0] - 2024-04-28
