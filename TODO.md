@@ -35,9 +35,23 @@
 
 
 ### [1.1.0] - 2024-MM-DD
-- Added MyPy type checking CI step
 - TODO
 
+---
+### 1.0.1
+
+
+
+#### mypy types ci script
+- run mypy on each push
+
+
+
+### [1.0.1] - 2024-07-04
+- Simplify `requirements.txt`
+- Added MyPy type checking CI step
+- General CI clean up
+- Linting improved
 
 -------------------------------------------------------
 
