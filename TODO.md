@@ -35,6 +35,7 @@
 
 
 ### [1.1.0] - 2024-MM-DD
+- Added MyPy type checking CI step
 - TODO
 
 
