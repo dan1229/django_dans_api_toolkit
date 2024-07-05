@@ -1,7 +1,8 @@
 # Django Dans API Toolkit
 
 [![Lint](https://github.com/dan1229/django_dans_api_toolkit/actions/workflows/lint.yml/badge.svg)](https://github.com/dan1229/django_dans_api_toolkit/actions/workflows/lint.yml)
-[![Test Python](https://github.com/dan1229/django_dans_api_toolkit/actions/workflows/python-test.yml/badge.svg)](https://github.com/dan1229/django_dans_api_toolkit/actions/workflows/python-test.yml)
+[![Test](https://github.com/dan1229/django_dans_api_toolkit/actions/workflows/python-test.yml/badge.svg)](https://github.com/dan1229/django_dans_api_toolkit/actions/workflows/python-test.yml)
+[![Types](https://github.com/dan1229/django_dans_api_toolkit/actions/workflows/python-types.yml/badge.svg)](https://github.com/dan1229/django_dans_api_toolkit/actions/workflows/python-types.yml)
 [![codecov](https://codecov.io/gh/dan1229/django_dans_api_toolkit/branch/main/graph/badge.svg?token=TL09HDQWBJ)](https://codecov.io/gh/dan1229/django_dans_api_toolkit)
 
 ## Description
