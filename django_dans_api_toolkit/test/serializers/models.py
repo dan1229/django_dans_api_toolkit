@@ -4,10 +4,10 @@ from ...serializers.base import BaseSerializer
 
 
 class SampleModel(models.Model):
-    field1 = models.CharField(max_length=100)
-    field2 = models.CharField(max_length=100)
-    field3 = models.CharField(max_length=100)
-    field4 = models.CharField(max_length=100)
+    field1 = models.CharField(max_length=100)  # type: ignore[var-annotated]
+    field2 = models.CharField(max_length=100)  # type: ignore[var-annotated]
+    field3 = models.CharField(max_length=100)  # type: ignore[var-annotated]
+    field4 = models.CharField(max_length=100)  # type: ignore[var-annotated]
 
 
 class SampleSerializer(BaseSerializer):
