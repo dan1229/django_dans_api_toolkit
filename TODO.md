@@ -7,11 +7,16 @@
 ### Improvements
 
 #### crud library
-- TODO
+- make a library for crud operations for django apis
+- something to allow each endpoint to just define the model and the viewset
 
 
 #### validation functions
-- TODO
+- validation functions for apis
+- things like:
+    - validate email
+    - validate phone number
+    - validate passwords
 
 
 -----
@@ -30,8 +35,13 @@
 
 
 #### update readme and docs?
-- mypy?
 - more badges?
+- other docs could use clean up
+- add docs
+    - models?
+    - serializers?
+    - api response?
+    - something to describe the different tools available overall?
 
 
 ### [1.1.0] - 2024-MM-DD
