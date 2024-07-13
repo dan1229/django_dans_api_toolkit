@@ -11,6 +11,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 -------------------------------------------------------
 ## [Released]
 
+### [1.0.2] - 2024-07-12
+- Added support for Djando 3.1+
+
+
 ### [1.0.1] - 2024-07-05
 - Simplify `requirements.txt`
     - Added `requirements-dev.txt` as well
