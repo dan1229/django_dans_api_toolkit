@@ -44,6 +44,31 @@
     - something to describe the different tools available overall?
 
 
+#### taking errors from error fields
+- this is working kinda well, some weird cases like:
+  - "This field may not be blank."
+  - "This field is required."
+  - "This field may not be null."
+- maybe this just isnt the way? the message should be unchanged
+  - these happened in cases where 'message' WAS being passed
+    - check MeetingSchedeuleWindowViewSet - create endpoint
+-
+- helper function to parse validation errors?
+    - i.e., if no message, pull it out of particular error types?
+    - view get twenty
+        - honestly just a lot of boilerplat in the meeting views
+            - meeting instance create api
+            - meeting schedule window create api
+    - can do different error types
+        - drf validation
+        - django validation
+        - integrity
+        - base error
+        - 'non_field_errors'
+            - should this be handled here or the client side response handler?
+
+
+
 ### [1.1.0] - 2024-MM-DD
 - TODO
 
