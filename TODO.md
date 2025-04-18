@@ -44,6 +44,13 @@
     - something to describe the different tools available overall?
 
 
+
+#### masked fields shouldn't be removed
+- i.e., don't remove the key just put "MASKED" or something?
+    - maybe make this an option?
+    - by default show the key with no value
+    
+
 #### taking errors from error fields
 - this is working kinda well, some weird cases like:
   - "This field may not be blank."
