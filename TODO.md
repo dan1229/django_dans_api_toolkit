@@ -32,20 +32,13 @@
 #### pypi test cd script
 - upload to test py on each push
 
+
+
 #### masked fields shouldn't be removed
 - i.e., don't remove the key just put "MASKED" or something?
     - maybe make this an option?
     - by default show the key with no value
     
-
-
------
-### 1.1.0
-
-
-
-#### paths arent resolving
-
 
 
 #### update readme and docs?
@@ -56,6 +49,21 @@
     - serializers?
     - api response?
     - something to describe the different tools available overall?
+
+
+
+-----
+### 1.1.0
+
+
+
+#### paths arent resolving
+- in repos they're not working
+    - no django dans are :(
+
+
+
+#### add detect version workflow to auto release
 
 
 
