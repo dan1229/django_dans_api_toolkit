@@ -57,11 +57,6 @@
 
 
 
-#### paths arent resolving
-- in repos they're not working
-    - no django dans are :(
-
-
 
 #### add detect version workflow to auto release
 
