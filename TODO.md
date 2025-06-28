@@ -65,6 +65,10 @@
 any other improvements / clean up?
 
 
+#### add lots of tests?
+- at least re-evaluate them
+- coverage too i guess
+
 
 #### taking errors from error fields
 - this is working kinda well, some weird cases like:
@@ -92,27 +96,35 @@ any other improvements / clean up?
 
 
 
-#### error logging doesnt work
-needed to add manual stack trace / logging to this
-- UserLoginViewSet
+#### ✅ COMPLETED: error logging improvements
+FIXED: ApiResponseHandler now automatically includes stack traces when Exception objects are logged.
 
+Changes made:
+- Modified `_handle_logging` method to accept optional `exception` parameter
+- When Exception objects are passed to `response_error`, they automatically get logged with `exc_info=True`
+- Backward compatible - string errors still work normally without stack traces
+- Added comprehensive tests to verify functionality
+
+Now developers can simply do:
+```python
 try:
-    # not masked because on login we want all the info
-    serializer = self.serializer_class(data=request.data, masked=False)
+    # some operation that might fail
     serializer.is_valid(raise_exception=True)
 except (ValidationError, IntegrityError, DRFValidationError) as e:
-    LOGGER.error(f"Error logging in user: {e}", exc_info=True)
     return self.response_handler.response_error(
         message="Error logging in user.",
-        error=f"{type(e)} - {e}",
+        error=e,  # Exception object automatically gets full stack trace
         error_fields=serializer.errors,
     )
+```
 
 
 
 
 ### [1.1.0] - 2025-MM-DD
-- TODO
+- Improved error logging!
+    - logging methods automatically pass exception data to logging handlers
+        - No more need for manual `LOGGER.error(f"...", exc_info=True)` boilerplate in viewsets
 
 -------------------------------------------------------
 

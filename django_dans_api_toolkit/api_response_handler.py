@@ -68,18 +68,26 @@ class ApiResponseHandler:
             api_response.extras = response.data
         return Response(api_response.dict(), status=status)
 
-    def _handle_logging(self, msg: str, print_log: bool) -> None:
+    def _handle_logging(
+        self, msg: str, print_log: bool, exception: Optional[Exception] = None
+    ) -> None:
         """Internal function to handle logging for responses handled by this class.
 
         Args:
             print_log (boolean): Whether or not to actually print the message.
             msg (str): Message to print.
+            exception (Exception, optional): Exception object to log with stack trace. Defaults to None.
         """
         if print_log:
             caller_frame = inspect.stack()[2]
             caller_info = f"{caller_frame.filename}:{caller_frame.lineno} in {caller_frame.function}"
             full_msg = f"{msg} | {caller_info}"
-            self.logger.error(full_msg)
+
+            # If an exception is provided, automatically include stack trace
+            if exception is not None:
+                self.logger.error(full_msg, exc_info=True)
+            else:
+                self.logger.error(full_msg)
 
     #
     # RESPONSE SUCCESS
@@ -171,10 +179,15 @@ class ApiResponseHandler:
 
         # error PASSED, this means we are potentially logging something
         if error:
+            # Only pass exception to logging if it's actually an Exception instance
+            exception_for_logging = error if isinstance(error, Exception) else None
+
             if message and message != error:  # message and error different, log both
-                self._handle_logging(f"{message} - {error}", print_log)
+                self._handle_logging(
+                    f"{message} - {error}", print_log, exception_for_logging
+                )
             else:  # error and message both exist and are the same
-                self._handle_logging(str(error), print_log)
+                self._handle_logging(str(error), print_log, exception_for_logging)
         # if no error, but message exists, log it
         elif message:
             self._handle_logging(message, print_log)
