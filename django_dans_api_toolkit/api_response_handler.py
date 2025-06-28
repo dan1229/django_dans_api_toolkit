@@ -98,7 +98,7 @@ class ApiResponseHandler:
         2. DRF ValidationError with non_field_errors
         3. IntegrityError messages
         4. String errors (raw string)
-        5. First field error from error_fields
+        5. First string error from error_fields (recursively, including nested structures)
 
         Args:
             error: The error object (ValidationError, IntegrityError, etc.)
@@ -107,6 +107,23 @@ class ApiResponseHandler:
         Returns:
             Extracted error message string, or None if no suitable message found
         """
+
+        def _extract_first_string_error(obj: Any) -> Optional[str]:
+            """Recursively extract the first string error from nested dicts/lists."""
+            if isinstance(obj, str):
+                return obj
+            if isinstance(obj, list):
+                for item in obj:
+                    result = _extract_first_string_error(item)
+                    if result:
+                        return result
+            if isinstance(obj, dict):
+                for value in obj.values():
+                    result = _extract_first_string_error(value)
+                    if result:
+                        return result
+            return None
+
         # Handle Django ValidationError
         if (
             isinstance(error, ValidationError)
@@ -125,12 +142,8 @@ class ApiResponseHandler:
                     non_field_errors = error.detail["non_field_errors"]
                     if isinstance(non_field_errors, list) and len(non_field_errors) > 0:
                         return str(non_field_errors[0])
-
-                # If no non_field_errors, try to get the first field error
-                for field_name, field_errors in error.detail.items():
-                    if isinstance(field_errors, list) and len(field_errors) > 0:
-                        return str(field_errors[0])
-
+                # If no non_field_errors, try to get the first string error recursively
+                return _extract_first_string_error(error.detail)
             # Fallback to string representation
             elif hasattr(error, "detail"):
                 return str(error.detail)
@@ -154,12 +167,8 @@ class ApiResponseHandler:
                 non_field_errors = error_fields["non_field_errors"]
                 if isinstance(non_field_errors, list) and len(non_field_errors) > 0:
                     return str(non_field_errors[0])
-
-            # Otherwise, get the first field error
-            first_key = next(iter(error_fields))
-            first_error_list = error_fields[first_key]
-            if isinstance(first_error_list, list) and len(first_error_list) > 0:
-                return str(first_error_list[0])
+            # Otherwise, get the first string error recursively
+            return _extract_first_string_error(error_fields)
 
         return None
 

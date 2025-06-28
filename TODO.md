@@ -83,6 +83,12 @@ confirm that we're putting secrets - like pypi password - safetly for a public r
 
 #### ✅ taking errors from error fields 
 
+fix mypy
+
+Run mypy . --config-file mypy.ini
+django_dans_api_toolkit/test/test_api_response_handler.py:339: error: Incompatible types in assignment (expression has type "IntegrityError", variable has type "ValidationError")  [assignment]
+Found 1 error in 1 file (checked 18 source files)
+
 
 
 ### [1.1.0] - 2025-MM-DD

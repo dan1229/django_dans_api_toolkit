@@ -336,8 +336,8 @@ class ApiResponseHandlerTestCase(TestCase):
         self.assertEqual(response.data["message"], "Validation error message.")  # type: ignore[index]
 
         # Test 4: IntegrityError behavior
-        error = IntegrityError("Integrity error message.")
-        response = self.api_response_handler.response_error(error=error)
+        integrity_error = IntegrityError("Integrity error message.")
+        response = self.api_response_handler.response_error(error=integrity_error)
         self.assertEqual(response.data["message"], "Integrity error message.")  # type: ignore[index]
 
         # Test 5: error_fields behavior
