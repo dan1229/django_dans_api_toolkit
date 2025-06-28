@@ -32,7 +32,7 @@ class ViewSet(viewsets.GenericViewSet):
         except (ValidationError, IntegrityError, DRFValidationError) as e:
             return self.response_handler.response_error(
                 message="Error logging in user.",
-                error=f"{type(e)} - {e}",
+                error=e,  # Exception objects automatically get full stack traces in logs!
                 error_fields=serializer.errors,
             )
 
@@ -53,10 +53,18 @@ Each supports a number of parameters, check the files for the most up to date in
 - `results` - the data to return to the user, this will be included in a list.
 - `status` - the status code to return, defaults to 200 or 400 depending.
 - Error responses:
-    - `error` - the error message to return to the user.
+    - `error` - the error message to return to the user. Can be a string or Exception object.
     - `error_fields` - the fields that caused the error, often with more information.
 
-It helps manage logging API responses and errors as well.
+#### Enhanced Error Logging
+
+The API response handler automatically provides enhanced error logging:
+
+- **Exception objects**: When you pass an Exception object to `error`, it automatically logs with full stack traces (using `exc_info=True`)
+- **String errors**: When you pass a string to `error`, it logs normally without stack traces
+- **Backward compatible**: All existing code continues to work unchanged
+
+This eliminates the need for manual `LOGGER.error(..., exc_info=True)` boilerplate in your viewsets.
 
 
 ### `api_response_renderer`
