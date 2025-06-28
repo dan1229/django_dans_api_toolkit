@@ -111,9 +111,9 @@ except (ValidationError, IntegrityError, DRFValidationError) as e:
 
 
 
-### [1.1.0] - 2024-MM-DD
+### [1.1.0] - 2025-MM-DD
 - TODO
 
 -------------------------------------------------------
 
-##### Copyright 2024 © Daniel Nazarian.
+##### Copyright 2025 © Daniel Nazarian.
