@@ -58,7 +58,6 @@
 
 
 
-#### add detect version workflow to auto release
 
 
 
@@ -96,8 +95,9 @@ any other improvements / clean up?
 
 
 
-#### ✅ COMPLETED: error logging improvements
-FIXED: ApiResponseHandler now automatically includes stack traces when Exception objects are logged.
+#### add detect version workflow to auto release
+
+
 
 
 
