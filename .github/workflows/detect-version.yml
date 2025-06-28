@@ -1,0 +1,62 @@
+name: Detect Version
+# This workflow is used to detect the version of the project
+# It is used to trigger the corresponding release workflow automatically
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deploy (X.X.X)'
+        required: false
+        type: string
+
+jobs:
+  detect-version:
+    runs-on: ubuntu-22.04
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get version from commit
+        id: get_version
+        run: |
+          # Check if version was provided via workflow_dispatch
+          if [ ! -z "${{ github.event.inputs.version }}" ]; then
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Get commit message
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+
+          # Look for version pattern [X.X.X] in commit message
+          if [[ $COMMIT_MSG =~ \[([0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?)\] ]]; then
+            VERSION="${BASH_REMATCH[1]}"
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "::notice::No version found in commit message - skipping deployment"
+            exit 0
+          fi
+
+      - name: Trigger release workflow
+        if: steps.get_version.outputs.version != ''
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const repo = context.repo.repo.replace(/\/$/, ''); // Remove trailing slash if present
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: repo,
+              workflow_id: 'release.yml',
+              ref: 'main',
+              inputs: {
+                version: '${{ steps.get_version.outputs.version }}'
+              }
+            }) 

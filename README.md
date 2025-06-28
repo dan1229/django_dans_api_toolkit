@@ -24,7 +24,7 @@ It provides a collection of tools for common API tasks, intended to complement D
 ## Features
 
 The toolkit includes:
-- **API Response Handler** (`api_response_handler.py`): Standardizes API response formats.
+- **API Response Handler** (`api_response_handler.py`): Standardizes API response formats with enhanced error logging that automatically captures stack traces for Exception objects.
 - **API Response Renderer** (`api_response_renderer.py`): Ensures consistent response rendering across your APIs.
 - **Base Serializer** (`serializers/base.py`): Simplifies serializer creation with masking and reference functionality.
 
@@ -61,11 +61,23 @@ The toolkit includes:
 
 ```python
 from django_dans_api_toolkit.api_response_handler import ApiResponseHandler
+from django.core.exceptions import ValidationError
 
 def my_view(request):
     handler = ApiResponseHandler()
-    data = {"key": "value"}
-    return handler.response_success(results=data)
+    
+    try:
+        # Your API logic here
+        serializer.is_valid(raise_exception=True)
+        data = {"key": "value"}
+        return handler.response_success(results=data)
+    except ValidationError as e:
+        # Exception objects automatically get full stack traces in logs! 
+        return handler.response_error(
+            message="Validation failed",
+            error=e, 
+            error_fields=serializer.errors
+        )
 ```
 
 
@@ -113,5 +125,5 @@ REST_FRAMEWORK = {
 
 ##### [https://danielnazarian.com](https://danielnazarian.com)
 
-##### Copyright 2024 © Daniel Nazarian.
+##### Copyright 2025 © Daniel Nazarian.
 

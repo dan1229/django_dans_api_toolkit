@@ -2,6 +2,7 @@ from django.test import TestCase
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
+from unittest.mock import MagicMock
 from ..api_response_handler import ApiResponseHandler
 
 
@@ -104,3 +105,69 @@ class ApiResponseHandlerTestCase(TestCase):
             self.api_response_handler.response_error(error=error)
             self.assertGreater(len(cm.output), 0, "No log output captured.")
             self.assertIn(error, cm.output[0])
+
+    def test_response_error_logging_with_exception_includes_stack_trace(self) -> None:
+        """Test that Exception objects automatically get logged with exc_info=True for stack traces."""
+        mock_logger = MagicMock()
+        handler = ApiResponseHandler(logger=mock_logger)
+
+        # Create a real exception to test with
+        test_exception = ValueError("Test exception message")
+
+        handler.response_error(error=test_exception, message="An error occurred")
+
+        # Verify that logger.error was called with exc_info=True
+        mock_logger.error.assert_called_once()
+        call_args = mock_logger.error.call_args
+        self.assertTrue(
+            call_args[1].get("exc_info"),
+            "exc_info should be True when logging exceptions",
+        )
+        self.assertIn("An error occurred - Test exception message", call_args[0][0])
+
+    def test_response_error_logging_with_string_error_no_stack_trace(self) -> None:
+        """Test that string errors don't get logged with exc_info=True."""
+        mock_logger = MagicMock()
+        handler = ApiResponseHandler(logger=mock_logger)
+
+        handler.response_error(
+            error="String error message", message="An error occurred"
+        )
+
+        # Verify that logger.error was called without exc_info=True
+        mock_logger.error.assert_called_once()
+        call_args = mock_logger.error.call_args
+        self.assertIsNone(
+            call_args[1].get("exc_info"), "exc_info should not be set for string errors"
+        )
+        self.assertIn("An error occurred - String error message", call_args[0][0])
+
+    def test_response_error_logging_exception_only_with_stack_trace(self) -> None:
+        """Test that when only an exception is passed (no custom message), it gets logged with stack trace."""
+        mock_logger = MagicMock()
+        handler = ApiResponseHandler(logger=mock_logger)
+
+        test_exception = RuntimeError("Runtime error occurred")
+
+        handler.response_error(error=test_exception)
+
+        # Verify that logger.error was called with exc_info=True
+        mock_logger.error.assert_called_once()
+        call_args = mock_logger.error.call_args
+        self.assertTrue(
+            call_args[1].get("exc_info"),
+            "exc_info should be True when logging exceptions",
+        )
+        self.assertIn("Runtime error occurred", call_args[0][0])
+
+    def test_response_error_logging_disabled_no_calls(self) -> None:
+        """Test that when print_log is False, no logging occurs."""
+        mock_logger = MagicMock()
+        handler = ApiResponseHandler(logger=mock_logger)
+
+        test_exception = ValueError("This should not be logged")
+
+        handler.response_error(error=test_exception, print_log=False)
+
+        # Verify that logger.error was not called
+        mock_logger.error.assert_not_called()

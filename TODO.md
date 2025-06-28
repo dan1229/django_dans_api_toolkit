@@ -58,12 +58,15 @@
 
 
 
-#### add detect version workflow to auto release
 
 
 
 any other improvements / clean up?
 
+
+#### add lots of tests?
+- at least re-evaluate them
+- coverage too i guess
 
 
 #### taking errors from error fields
@@ -92,28 +95,18 @@ any other improvements / clean up?
 
 
 
-#### error logging doesnt work
-needed to add manual stack trace / logging to this
-- UserLoginViewSet
-
-try:
-    # not masked because on login we want all the info
-    serializer = self.serializer_class(data=request.data, masked=False)
-    serializer.is_valid(raise_exception=True)
-except (ValidationError, IntegrityError, DRFValidationError) as e:
-    LOGGER.error(f"Error logging in user: {e}", exc_info=True)
-    return self.response_handler.response_error(
-        message="Error logging in user.",
-        error=f"{type(e)} - {e}",
-        error_fields=serializer.errors,
-    )
 
 
 
 
-### [1.1.0] - 2024-MM-DD
-- TODO
+
+### [1.1.0] - 2025-MM-DD
+- Improved error logging!
+    - logging methods automatically pass exception data to logging handlers
+        - No more need for manual `LOGGER.error(f"...", exc_info=True)` boilerplate in viewsets
+- As always - tests, tests, testsk hi
+- Added `detect-version` Github workflow for auto releases
 
 -------------------------------------------------------
 
-##### Copyright 2024 © Daniel Nazarian.
+##### Copyright 2025 © Daniel Nazarian.
