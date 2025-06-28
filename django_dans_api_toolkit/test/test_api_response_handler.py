@@ -189,12 +189,11 @@ class ApiResponseHandlerTestCase(TestCase):
     def test_custom_message_priority_over_drf_validation_error(self) -> None:
         """Test that custom message takes priority over DRF-style validation errors."""
         drf_error = DRFValidationError({"field1": ["This field is required."]})
-
         custom_message = "Custom validation error message"
+        error_fields = drf_error.detail if isinstance(drf_error.detail, dict) else None
         response = self.api_response_handler.response_error(
-            message=custom_message, error=drf_error, error_fields=drf_error.detail
+            message=custom_message, error=drf_error, error_fields=error_fields
         )
-
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["message"], custom_message)  # type: ignore[index]
         self.assertEqual(response.data["error_fields"], drf_error.detail)  # type: ignore[index]
@@ -272,28 +271,24 @@ class ApiResponseHandlerTestCase(TestCase):
     def test_message_priority_over_all_error_types(self) -> None:
         """Test that custom message always takes priority over any error type."""
         custom_message = "User-friendly error message"
-
         # Test with Django ValidationError
         django_error = ValidationError({"__all__": ["Django validation failed."]})
         response = self.api_response_handler.response_error(
             message=custom_message, error=django_error
         )
         self.assertEqual(response.data["message"], custom_message)  # type: ignore[index]
-
         # Test with DRF ValidationError
         drf_error = DRFValidationError({"non_field_errors": ["DRF validation failed."]})
         response = self.api_response_handler.response_error(
             message=custom_message, error=drf_error
         )
         self.assertEqual(response.data["message"], custom_message)  # type: ignore[index]
-
         # Test with IntegrityError
         integrity_error = IntegrityError("Database constraint violation")
         response = self.api_response_handler.response_error(
             message=custom_message, error=integrity_error
         )
         self.assertEqual(response.data["message"], custom_message)  # type: ignore[index]
-
         # Test with error_fields
         error_fields = {"field1": ["Field validation failed."]}
         response = self.api_response_handler.response_error(

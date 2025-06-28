@@ -97,7 +97,8 @@ class ApiResponseHandler:
         1. Django ValidationError with __all__ field
         2. DRF ValidationError with non_field_errors
         3. IntegrityError messages
-        4. First field error from error_fields
+        4. String errors (raw string)
+        5. First field error from error_fields
 
         Args:
             error: The error object (ValidationError, IntegrityError, etc.)
@@ -137,6 +138,10 @@ class ApiResponseHandler:
         # Handle IntegrityError
         elif isinstance(error, IntegrityError):
             return str(error)
+
+        # Handle string errors
+        elif isinstance(error, str):
+            return error
 
         # Handle other exceptions with string representation
         elif isinstance(error, Exception):

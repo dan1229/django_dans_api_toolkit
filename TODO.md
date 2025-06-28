@@ -81,20 +81,7 @@ confirm that we're putting secrets - like pypi password - safetly for a public r
 - coverage too i guess
 
 
-#### ✅ taking errors from error fields - RESOLVED
-- ~~this is working kinda well, some weird cases like~~
-- ~~helper function to parse validation errors~~
-- FIXED: Added comprehensive `_parse_validation_error_message()` helper function
-- FIXED: Handles all validation error types (DRF, Django, IntegrityError, generic exceptions)
-- FIXED: Custom messages now have absolute priority
-- FIXED: Better support for `non_field_errors` and complex nested structures
-- FIXED: 100% backwards compatibility maintained
-
-
-
-
-is this error fields thing worthwhile and good? it may be over engineering no?
-
+#### ✅ taking errors from error fields 
 
 
 
@@ -102,7 +89,7 @@ is this error fields thing worthwhile and good? it may be over engineering no?
 - Improved error logging!
     - logging methods automatically pass exception data to logging handlers
         - No more need for manual `LOGGER.error(f"...", exc_info=True)` boilerplate in viewsets
-- Enhanced error field parsing and management! ✅
+- Enhanced error field parsing and message creation!
     - Added robust helper function `_parse_validation_error_message()` to handle different validation error types
     - Improved support for DRF ValidationError with `non_field_errors` priority
     - Better handling of complex nested error structures 
