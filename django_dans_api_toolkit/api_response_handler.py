@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework.exceptions import ValidationError as DRFValidationError
 import logging
 
 from .api_response import ApiResponse
@@ -84,6 +85,79 @@ class ApiResponseHandler:
             else:
                 self.logger.error(msg, stack_info=True)
 
+    def _parse_validation_error_message(
+        self,
+        error: Optional[Union[str, Exception]] = None,
+        error_fields: Optional[Dict[Any, Any]] = None,
+    ) -> Optional[str]:
+        """
+        Helper function to parse validation errors and extract meaningful messages.
+
+        This handles different types of validation errors in order of preference:
+        1. Django ValidationError with __all__ field
+        2. DRF ValidationError with non_field_errors
+        3. IntegrityError messages
+        4. First field error from error_fields
+
+        Args:
+            error: The error object (ValidationError, IntegrityError, etc.)
+            error_fields: Dictionary of field-specific errors
+
+        Returns:
+            Extracted error message string, or None if no suitable message found
+        """
+        # Handle Django ValidationError
+        if (
+            isinstance(error, ValidationError)
+            and hasattr(error, "error_dict")
+            and error.error_dict.get("__all__")
+        ):
+            message_dict = error.message_dict.get("__all__")
+            if isinstance(message_dict, list) and len(message_dict) > 0:
+                return str(message_dict[0])
+
+        # Handle DRF ValidationError
+        elif isinstance(error, DRFValidationError):
+            # Try non_field_errors first (most general errors)
+            if hasattr(error, "detail") and isinstance(error.detail, dict):
+                if "non_field_errors" in error.detail:
+                    non_field_errors = error.detail["non_field_errors"]
+                    if isinstance(non_field_errors, list) and len(non_field_errors) > 0:
+                        return str(non_field_errors[0])
+
+                # If no non_field_errors, try to get the first field error
+                for field_name, field_errors in error.detail.items():
+                    if isinstance(field_errors, list) and len(field_errors) > 0:
+                        return str(field_errors[0])
+
+            # Fallback to string representation
+            elif hasattr(error, "detail"):
+                return str(error.detail)
+
+        # Handle IntegrityError
+        elif isinstance(error, IntegrityError):
+            return str(error)
+
+        # Handle other exceptions with string representation
+        elif isinstance(error, Exception):
+            return str(error)
+
+        # Finally, try to extract from error_fields if available
+        elif error_fields and len(error_fields) > 0:
+            # Look for non_field_errors first
+            if "non_field_errors" in error_fields:
+                non_field_errors = error_fields["non_field_errors"]
+                if isinstance(non_field_errors, list) and len(non_field_errors) > 0:
+                    return str(non_field_errors[0])
+
+            # Otherwise, get the first field error
+            first_key = next(iter(error_fields))
+            first_error_list = error_fields[first_key]
+            if isinstance(first_error_list, list) and len(first_error_list) > 0:
+                return str(first_error_list[0])
+
+        return None
+
     #
     # RESPONSE SUCCESS
     #
@@ -145,30 +219,14 @@ class ApiResponseHandler:
         if print_log is None:
             print_log = True
 
-        # use provided message if available
-        # this is top priority
+        # Priority 1: Use provided message if available (top priority)
         if message:
             message_res = str(message)
-        # django validation error
-        elif (
-            isinstance(error, ValidationError)
-            and hasattr(error, "error_dict")
-            and error.error_dict.get("__all__")
-        ):
-            # try to parse ValidationError
-            message_dict = error.message_dict.get("__all__")
-            if isinstance(message_dict, list) and len(message_dict) > 0:
-                message_res = str(message_dict[0])
-        # integrity error
-        elif isinstance(error, IntegrityError):
-            message_res = str(error)
-        # get field error for 'message'
-        elif error_fields and len(error_fields) > 0:
-            # Assuming the first field error is representative
-            first_key = next(iter(error_fields))
-            first_error_list = error_fields[first_key]
-            if isinstance(first_error_list, list) and len(first_error_list) > 0:
-                message_res = str(first_error_list[0])
+        else:
+            # Priority 2: Try to parse validation errors for a meaningful message
+            parsed_message = self._parse_validation_error_message(error, error_fields)
+            if parsed_message:
+                message_res = parsed_message
 
         # Figure out logging / error
 
