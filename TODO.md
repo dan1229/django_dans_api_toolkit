@@ -95,8 +95,6 @@ any other improvements / clean up?
 
 
 
-#### add detect version workflow to auto release
-
 
 
 
@@ -106,7 +104,8 @@ any other improvements / clean up?
 - Improved error logging!
     - logging methods automatically pass exception data to logging handlers
         - No more need for manual `LOGGER.error(f"...", exc_info=True)` boilerplate in viewsets
-- As always - tests, tests, tests
+- As always - tests, tests, testsk hi
+- Added `detect-version` Github workflow for auto releases
 
 -------------------------------------------------------
 

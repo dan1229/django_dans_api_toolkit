@@ -2,7 +2,7 @@ from django.test import TestCase
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
 from ..api_response_handler import ApiResponseHandler
 
 
@@ -106,10 +106,7 @@ class ApiResponseHandlerTestCase(TestCase):
             self.assertGreater(len(cm.output), 0, "No log output captured.")
             self.assertIn(error, cm.output[0])
 
-    @patch("django_dans_api_toolkit.api_response_handler.DEFAULT_LOGGER")
-    def test_response_error_logging_with_exception_includes_stack_trace(
-        self, mock_default_logger: MagicMock
-    ) -> None:
+    def test_response_error_logging_with_exception_includes_stack_trace(self) -> None:
         """Test that Exception objects automatically get logged with exc_info=True for stack traces."""
         mock_logger = MagicMock()
         handler = ApiResponseHandler(logger=mock_logger)
@@ -128,10 +125,7 @@ class ApiResponseHandlerTestCase(TestCase):
         )
         self.assertIn("An error occurred - Test exception message", call_args[0][0])
 
-    @patch("django_dans_api_toolkit.api_response_handler.DEFAULT_LOGGER")
-    def test_response_error_logging_with_string_error_no_stack_trace(
-        self, mock_default_logger: MagicMock
-    ) -> None:
+    def test_response_error_logging_with_string_error_no_stack_trace(self) -> None:
         """Test that string errors don't get logged with exc_info=True."""
         mock_logger = MagicMock()
         handler = ApiResponseHandler(logger=mock_logger)
@@ -148,10 +142,7 @@ class ApiResponseHandlerTestCase(TestCase):
         )
         self.assertIn("An error occurred - String error message", call_args[0][0])
 
-    @patch("django_dans_api_toolkit.api_response_handler.DEFAULT_LOGGER")
-    def test_response_error_logging_exception_only_with_stack_trace(
-        self, mock_default_logger: MagicMock
-    ) -> None:
+    def test_response_error_logging_exception_only_with_stack_trace(self) -> None:
         """Test that when only an exception is passed (no custom message), it gets logged with stack trace."""
         mock_logger = MagicMock()
         handler = ApiResponseHandler(logger=mock_logger)
@@ -169,10 +160,7 @@ class ApiResponseHandlerTestCase(TestCase):
         )
         self.assertIn("Runtime error occurred", call_args[0][0])
 
-    @patch("django_dans_api_toolkit.api_response_handler.DEFAULT_LOGGER")
-    def test_response_error_logging_disabled_no_calls(
-        self, mock_default_logger: MagicMock
-    ) -> None:
+    def test_response_error_logging_disabled_no_calls(self) -> None:
         """Test that when print_log is False, no logging occurs."""
         mock_logger = MagicMock()
         handler = ApiResponseHandler(logger=mock_logger)

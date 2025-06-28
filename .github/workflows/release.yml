@@ -2,9 +2,6 @@ name: Release
 
 on:
   workflow_dispatch:
-
-    branches:
-      - 'main'
     inputs:
       version:
         required: true
@@ -39,10 +36,13 @@ jobs:
   release-github:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        
       - name: Create release in GitHub
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ github.event.inputs.version }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit: ${{ github.event.pull_request.head.sha }}
-          body: ${{ github.event.head_commit.message }}
+          commit: ${{ github.sha }}
+          body: "Release version ${{ github.event.inputs.version }}"

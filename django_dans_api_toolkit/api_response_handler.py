@@ -4,7 +4,6 @@ from django.db import IntegrityError
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 import logging
-import inspect
 
 from .api_response import ApiResponse
 
@@ -79,15 +78,11 @@ class ApiResponseHandler:
             exception (Exception, optional): Exception object to log with stack trace. Defaults to None.
         """
         if print_log:
-            caller_frame = inspect.stack()[2]
-            caller_info = f"{caller_frame.filename}:{caller_frame.lineno} in {caller_frame.function}"
-            full_msg = f"{msg} | {caller_info}"
-
-            # If an exception is provided, automatically include stack trace
+            # Let logging handle stack info automatically - more efficient than inspect.stack()
             if exception is not None:
-                self.logger.error(full_msg, exc_info=True)
+                self.logger.error(msg, exc_info=True, stack_info=True)
             else:
-                self.logger.error(full_msg)
+                self.logger.error(msg, stack_info=True)
 
     #
     # RESPONSE SUCCESS
