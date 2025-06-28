@@ -62,6 +62,10 @@
 
 
 
+any other improvements / clean up?
+
+
+
 #### taking errors from error fields
 - this is working kinda well, some weird cases like:
   - "This field may not be blank."
