@@ -53,10 +53,19 @@
 
 
 
-##### set custom logger name?
+##### set custom logger name
 - logs show up in sentry and stuff as 'django_dans_api_toolkit'
     - not a huge deal but definitely would be nice to offer an option
     - a bit misleading
+
+
+
+
+#### add lots of tests?
+- at least re-evaluate them
+- coverage too i guess
+
+
 
 
 -----
@@ -64,21 +73,6 @@
 
 
 
-
-
-
-
-any other improvements / clean up?
-
-
-
-confirm that we're putting secrets - like pypi password - safetly for a public repo
-
-
-
-#### add lots of tests?
-- at least re-evaluate them
-- coverage too i guess
 
 
 

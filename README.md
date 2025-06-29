@@ -127,4 +127,3 @@ REST_FRAMEWORK = {
 ##### [https://danielnazarian.com](https://danielnazarian.com)
 
 ##### Copyright 2025 © Daniel Nazarian.
-
