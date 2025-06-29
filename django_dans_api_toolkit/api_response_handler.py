@@ -109,7 +109,17 @@ class ApiResponseHandler:
         """
 
         def _extract_first_string_error(obj: Any) -> Optional[str]:
-            """Recursively extract the first string error from nested dicts/lists."""
+            """Recursively extract the first string error from nested dicts/lists, including DRF ErrorDetail objects."""
+            # DRF's ErrorDetail objects are not always present (if DRF isn't installed),
+            # so we import ErrorDetail locally and only check for it if available.
+            # This avoids a hard dependency on DRF for users who only use Django.
+            try:
+                from rest_framework.exceptions import ErrorDetail
+
+                if isinstance(obj, ErrorDetail):
+                    return str(obj)
+            except ImportError:
+                pass
             if isinstance(obj, str):
                 return obj
             if isinstance(obj, list):
@@ -127,8 +137,8 @@ class ApiResponseHandler:
         # Handle Django ValidationError
         if (
             isinstance(error, ValidationError)
-            and hasattr(error, "error_dict")
-            and error.error_dict.get("__all__")
+            and hasattr(error, "message_dict")
+            and "__all__" in error.message_dict
         ):
             message_dict = error.message_dict.get("__all__")
             if isinstance(message_dict, list) and len(message_dict) > 0:
