@@ -317,6 +317,18 @@ class ApiResponseHandlerTestCase(TestCase):
         self.assertIsInstance(message, str)
         self.assertNotEqual(message, self.api_response_handler.message_error)
 
+    def test_extremely_nested_error_structure(self) -> None:
+        """Test handling of extremely nested error structures (lists of dicts of lists)."""
+        drf_error = DRFValidationError(
+            [
+                {"outer": [{"inner": ["Deep error message!"]}]},
+                {"other": ["Should not be reached."]},
+            ]
+        )
+        response = self.api_response_handler.response_error(error=drf_error)
+        self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["message"], "Deep error message!")  # type: ignore[index]
+
     def test_backwards_compatibility_with_existing_tests(self) -> None:
         """Ensure all existing functionality still works exactly the same."""
         # This test verifies that none of the existing behavior changed

@@ -60,35 +60,38 @@ Each supports a number of parameters, check the files for the most up to date in
 
 The API response handler provides robust error logging and user-friendly error message extraction. Here's how it works:
 
-- **Exception objects**: If you pass an Exception (e.g., Django or DRF ValidationError, IntegrityError), it is logged with a full stack trace (`exc_info=True`).
-- **String errors**: If you pass a string as the error, it is logged as a normal error message (no stack trace).
-- **Backward compatibility**: All existing code continues to work unchanged.
-- **Error message extraction**: The handler extracts the most relevant error message for the user, following this order of precedence:
-  1. **Django ValidationError with `__all__` field**: Uses the first message from the `__all__` field if present.
-  2. **DRF ValidationError with `non_field_errors`**: Uses the first message from `non_field_errors` if present.
-  3. **DRF ValidationError (other fields)**: Recursively searches all fields (including nested dicts/lists) for the first string error.
-  4. **IntegrityError**: Uses the string representation of the error.
-  5. **String errors**: Uses the string directly.
-  6. **Other Exception types**: Uses the string representation of the exception.
-  7. **`error_fields` dict**: Recursively searches for the first string error, prioritizing `non_field_errors` if present.
+| Precedence | Error Type                                      | How Message is Extracted                                  |
+|------------|-------------------------------------------------|-----------------------------------------------------------|
+| 1          | Django ValidationError with `__all__`            | First message from `__all__` field                        |
+| 2          | DRF ValidationError with `non_field_errors`      | First message from `non_field_errors`                     |
+| 3          | DRF ValidationError (other fields, nested)       | Recursively finds first string error in any field         |
+| 4          | IntegrityError                                   | String representation of the error                        |
+| 5          | String errors                                    | Uses the string directly                                  |
+| 6          | Other Exception types                            | String representation of the exception                    |
+| 7          | `error_fields` dict (recursively)                | Recursively finds first string error, prioritizing `non_field_errors` |
 
-- **Deeply nested error support**: For example, given a DRF ValidationError like:
+**Why this matters:**
+- You always get the most relevant, user-friendly error message, even from complex/nested error structures.
+- No more manual `LOGGER.error(..., exc_info=True)` boilerplate—exceptions are logged with stack traces automatically.
+- Backwards compatibility: all existing code continues to work unchanged.
 
-  ```python
-  {
-      'user': {
-          'profile': {
-              'email': ['Invalid email.']
-          }
-      },
-      'password': ['Too short.']
-  }
-  ```
-  The handler will always surface the first relevant string error it finds, even if it is several levels deep in a dict or list.
+**Example: deeply nested error extraction**
 
-- **Type annotations and docstrings**: All helpers and handlers now have improved type annotations and docstrings for clarity and best practices.
+Given a DRF ValidationError like:
 
-This eliminates the need for manual `LOGGER.error(..., exc_info=True)` boilerplate in your viewsets and ensures the most relevant error message is always shown to the user.
+```python
+{
+    'user': {
+        'profile': {
+            'email': ['Invalid email.']
+        }
+    },
+    'password': ['Too short.']
+}
+```
+The handler will always surface the first relevant string error it finds, even if it is several levels deep in a dict or list.
+
+All helpers and handlers now have improved type annotations and docstrings for clarity and best practices.
 
 
 ### `api_response_renderer`
