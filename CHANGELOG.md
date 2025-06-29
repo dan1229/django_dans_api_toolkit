@@ -97,6 +97,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Basic project set up with `README`, `CHANGELOG`, and `LICENSE` files
 - Basic CI and testing set up
 
+### [1.2.0] - 2024-07-13
+- Enhanced error message extraction:
+    - Now supports arbitrarily nested error structures (dicts/lists) for DRF and Django ValidationErrors.
+    - Always surfaces the most relevant error message, even from deeply nested structures.
+    - Improved type annotations and docstrings for all helpers and handlers.
+- Backwards compatibility:
+    - All previous behaviors are preserved and tested.
+    - Extensive test coverage, including new tests for bizarre/nested error structures.
+- Documentation:
+    - Docs and README updated for clarity, with concrete examples and a clear error precedence table.
+
 -------------------------------------------------------
 
 ##### [https://danielnazarian.com](https://danielnazarian.com)

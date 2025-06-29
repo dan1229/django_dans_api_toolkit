@@ -52,6 +52,13 @@
 
 
 
+
+##### set custom logger name?
+- logs show up in sentry and stuff as 'django_dans_api_toolkit'
+    - not a huge deal but definitely would be nice to offer an option
+    - a bit misleading
+
+
 -----
 ### 1.1.0
 
@@ -64,36 +71,14 @@
 any other improvements / clean up?
 
 
+
+confirm that we're putting secrets - like pypi password - safetly for a public repo
+
+
+
 #### add lots of tests?
 - at least re-evaluate them
 - coverage too i guess
-
-
-#### taking errors from error fields
-- this is working kinda well, some weird cases like:
-  - "This field may not be blank."
-  - "This field is required."
-  - "This field may not be null."
-- maybe this just isnt the way? the message should be unchanged
-  - these happened in cases where 'message' WAS being passed
-    - check MeetingSchedeuleWindowViewSet - create endpoint
--
-- helper function to parse validation errors?
-    - i.e., if no message, pull it out of particular error types?
-    - view get twenty
-        - honestly just a lot of boilerplat in the meeting views
-            - meeting instance create api
-            - meeting schedule window create api
-    - can do different error types
-        - drf validation
-        - django validation
-        - integrity
-        - base error
-        - 'non_field_errors'
-            - should this be handled here or the client side response handler?
-
-
-
 
 
 
@@ -104,7 +89,12 @@ any other improvements / clean up?
 - Improved error logging!
     - logging methods automatically pass exception data to logging handlers
         - No more need for manual `LOGGER.error(f"...", exc_info=True)` boilerplate in viewsets
-- As always - tests, tests, testsk hi
+- Enhanced error field parsing and message creation!
+    - Added robust helper function `_parse_validation_error_message()` to handle different validation error types
+    - Improved support for DRF ValidationError with `non_field_errors` priority
+    - Better handling of complex nested error structures 
+    - Custom messages now always take absolute priority over any error type
+- As always - tests, tests, tests
 - Added `detect-version` Github workflow for auto releases
 
 -------------------------------------------------------

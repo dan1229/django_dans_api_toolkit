@@ -24,7 +24,7 @@ It provides a collection of tools for common API tasks, intended to complement D
 ## Features
 
 The toolkit includes:
-- **API Response Handler** (`api_response_handler.py`): Standardizes API response formats with enhanced error logging that automatically captures stack traces for Exception objects.
+- **API Response Handler** (`api_response_handler.py`): Standardizes API response formats with enhanced error logging that automatically captures stack traces for Exception objects. Now with robust error message extraction that supports arbitrarily nested error structures (for example, DRF ValidationError details like `{ 'user': { 'profile': { 'email': ['Invalid email.'] } }, 'password': ['Too short.'] }`). The handler will always surface the first relevant string error it finds, even if it is several levels deep in a dict or list, ensuring user-friendly error messages regardless of how complex the error structure is. Type annotations and docstrings have also been improved for clarity and best practices.
 - **API Response Renderer** (`api_response_renderer.py`): Ensures consistent response rendering across your APIs.
 - **Base Serializer** (`serializers/base.py`): Simplifies serializer creation with masking and reference functionality.
 
@@ -73,6 +73,7 @@ def my_view(request):
         return handler.response_success(results=data)
     except ValidationError as e:
         # Exception objects automatically get full stack traces in logs! 
+        # Error message extraction also supports arbitrarily nested error structures.
         return handler.response_error(
             message="Validation failed",
             error=e, 

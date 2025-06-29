@@ -56,15 +56,42 @@ Each supports a number of parameters, check the files for the most up to date in
     - `error` - the error message to return to the user. Can be a string or Exception object.
     - `error_fields` - the fields that caused the error, often with more information.
 
-#### Enhanced Error Logging
+#### Enhanced Error Logging & Message Extraction
 
-The API response handler automatically provides enhanced error logging:
+The API response handler provides robust error logging and user-friendly error message extraction. Here's how it works:
 
-- **Exception objects**: When you pass an Exception object to `error`, it automatically logs with full stack traces (using `exc_info=True`)
-- **String errors**: When you pass a string to `error`, it logs normally without stack traces
-- **Backward compatible**: All existing code continues to work unchanged
+| Precedence | Error Type                                      | How Message is Extracted                                  |
+|------------|-------------------------------------------------|-----------------------------------------------------------|
+| 1          | Django ValidationError with `__all__`            | First message from `__all__` field                        |
+| 2          | DRF ValidationError with `non_field_errors`      | First message from `non_field_errors`                     |
+| 3          | DRF ValidationError (other fields, nested)       | Recursively finds first string error in any field         |
+| 4          | IntegrityError                                   | String representation of the error                        |
+| 5          | String errors                                    | Uses the string directly                                  |
+| 6          | Other Exception types                            | String representation of the exception                    |
+| 7          | `error_fields` dict (recursively)                | Recursively finds first string error, prioritizing `non_field_errors` |
 
-This eliminates the need for manual `LOGGER.error(..., exc_info=True)` boilerplate in your viewsets.
+**Why this matters:**
+- You always get the most relevant, user-friendly error message, even from complex/nested error structures.
+- No more manual `LOGGER.error(..., exc_info=True)` boilerplate—exceptions are logged with stack traces automatically.
+- Backwards compatibility: all existing code continues to work unchanged.
+
+**Example: deeply nested error extraction**
+
+Given a DRF ValidationError like:
+
+```python
+{
+    'user': {
+        'profile': {
+            'email': ['Invalid email.']
+        }
+    },
+    'password': ['Too short.']
+}
+```
+The handler will always surface the first relevant string error it finds, even if it is several levels deep in a dict or list.
+
+All helpers and handlers now have improved type annotations and docstrings for clarity and best practices.
 
 
 ### `api_response_renderer`
