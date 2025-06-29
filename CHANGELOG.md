@@ -11,6 +11,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 -------------------------------------------------------
 ## [Released]
 
+### [1.1.0] - 2025-06-28
+- Improved error logging!
+    - logging methods automatically pass exception data to logging handlers
+        - No more need for manual `LOGGER.error(f"...", exc_info=True)` boilerplate in viewsets
+- Enhanced error field parsing and message creation!
+    - Added robust helper function `_parse_validation_error_message()` to handle different validation error types
+    - Improved support for DRF ValidationError with `non_field_errors` priority
+    - Better handling of complex nested error structures 
+    - Custom messages now always take absolute priority over any error type
+- As always - tests, tests, tests
+- Added `detect-version` Github workflow for auto releases
+
+
 ### [1.0.2] - 2024-07-12
 - Added support for Djando 3.1+
 
@@ -96,17 +109,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Initial release on PyPi
 - Basic project set up with `README`, `CHANGELOG`, and `LICENSE` files
 - Basic CI and testing set up
-
-### [1.2.0] - 2024-07-13
-- Enhanced error message extraction:
-    - Now supports arbitrarily nested error structures (dicts/lists) for DRF and Django ValidationErrors.
-    - Always surfaces the most relevant error message, even from deeply nested structures.
-    - Improved type annotations and docstrings for all helpers and handlers.
-- Backwards compatibility:
-    - All previous behaviors are preserved and tested.
-    - Extensive test coverage, including new tests for bizarre/nested error structures.
-- Documentation:
-    - Docs and README updated for clarity, with concrete examples and a clear error precedence table.
 
 -------------------------------------------------------
 

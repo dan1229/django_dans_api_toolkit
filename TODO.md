@@ -67,29 +67,8 @@
 
 
 
-
------
-### 1.1.0
-
-
-
-
-
-
-
-
-
-### [1.1.0] - 2025-MM-DD
-- Improved error logging!
-    - logging methods automatically pass exception data to logging handlers
-        - No more need for manual `LOGGER.error(f"...", exc_info=True)` boilerplate in viewsets
-- Enhanced error field parsing and message creation!
-    - Added robust helper function `_parse_validation_error_message()` to handle different validation error types
-    - Improved support for DRF ValidationError with `non_field_errors` priority
-    - Better handling of complex nested error structures 
-    - Custom messages now always take absolute priority over any error type
-- As always - tests, tests, tests
-- Added `detect-version` Github workflow for auto releases
+### [1.2.0] - 2025-MM-DD
+- TODO
 
 -------------------------------------------------------
 
