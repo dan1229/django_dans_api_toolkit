@@ -146,16 +146,19 @@ class ApiResponseHandler:
 
         # Handle DRF ValidationError
         elif isinstance(error, DRFValidationError):
-            # Try non_field_errors first (most general errors)
-            if hasattr(error, "detail") and isinstance(error.detail, dict):
-                if "non_field_errors" in error.detail:
+            if hasattr(error, "detail"):
+                # Try non_field_errors first if detail is a dict
+                if (
+                    isinstance(error.detail, dict)
+                    and "non_field_errors" in error.detail
+                ):
                     non_field_errors = error.detail["non_field_errors"]
                     if isinstance(non_field_errors, list) and len(non_field_errors) > 0:
                         return str(non_field_errors[0])
-                # If no non_field_errors, try to get the first string error recursively
-                return _extract_first_string_error(error.detail)
-            # Fallback to string representation
-            elif hasattr(error, "detail"):
+                # Recursively extract from dict or list
+                if isinstance(error.detail, (dict, list)):
+                    return _extract_first_string_error(error.detail)
+                # Fallback to string representation
                 return str(error.detail)
 
         # Handle IntegrityError

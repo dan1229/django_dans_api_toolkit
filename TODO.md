@@ -85,13 +85,6 @@ confirm that we're putting secrets - like pypi password - safetly for a public r
 
 
 
-#### ✅ taking errors from error fields 
-
-- last couple reviews?
-
-
-
-
 ### [1.1.0] - 2025-MM-DD
 - Improved error logging!
     - logging methods automatically pass exception data to logging handlers
