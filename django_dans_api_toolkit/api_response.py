@@ -19,7 +19,7 @@ class ApiResponse:
     message: Optional[str]
     results: Optional[Union[Dict[str, object], List[object]]]
     error_fields: Optional[Dict[str, List[str]]]
-    non_field_errors: Optional[List[str]]
+    non_field_errors: Optional[Union[str, List[str]]]
     extras: Optional[Dict[str, object]]
 
     def __init__(
@@ -28,7 +28,7 @@ class ApiResponse:
         message: Optional[str] = None,
         results: Optional[Union[Dict[str, object], List[object]]] = None,
         error_fields: Optional[Dict[str, List[str]]] = None,
-        non_field_errors: Optional[List[str]] = None,
+        non_field_errors: Optional[Union[str, List[str]]] = None,
         **kwargs: object
     ) -> None:
         if not status:

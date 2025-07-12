@@ -364,7 +364,7 @@ class ApiResponseHandlerTestCase(TestCase):
 
     def test_non_field_errors_are_top_level(self) -> None:
         """Test that non_field_errors are top-level and not inside error_fields."""
-        error_fields = {
+        error_fields: dict[str, list[str]] = {
             "non_field_errors": [
                 "You have too many pending scouting invites (limit: 5). Please wait for responses before sending more."
             ],
@@ -385,7 +385,7 @@ class ApiResponseHandlerTestCase(TestCase):
 
     def test_only_non_field_errors(self) -> None:
         """Test response when only non_field_errors are present."""
-        error_fields = {"non_field_errors": ["General error."]}
+        error_fields: dict[str, list[str]] = {"non_field_errors": ["General error."]}
         response = self.api_response_handler.response_error(
             error_fields=error_fields.copy()
         )
@@ -396,7 +396,7 @@ class ApiResponseHandlerTestCase(TestCase):
 
     def test_only_field_errors(self) -> None:
         """Test response when only field errors are present."""
-        error_fields = {"field": ["Field error."]}
+        error_fields: dict[str, list[str]] = {"field": ["Field error."]}
         response = self.api_response_handler.response_error(
             error_fields=error_fields.copy()
         )
@@ -406,7 +406,7 @@ class ApiResponseHandlerTestCase(TestCase):
 
     def test_both_non_field_and_field_errors(self) -> None:
         """Test response when both non_field_errors and field errors are present."""
-        error_fields = {
+        error_fields: dict[str, list[str]] = {
             "non_field_errors": ["General error."],
             "field": ["Field error."],
         }
@@ -420,7 +420,10 @@ class ApiResponseHandlerTestCase(TestCase):
 
     def test_both_present_but_non_field_errors_empty(self) -> None:
         """Test response when both present but non_field_errors is empty."""
-        error_fields = {"non_field_errors": [], "field": ["Field error."]}
+        error_fields: dict[str, list[str]] = {
+            "non_field_errors": [],
+            "field": ["Field error."],
+        }
         response = self.api_response_handler.response_error(
             error_fields=error_fields.copy()
         )
