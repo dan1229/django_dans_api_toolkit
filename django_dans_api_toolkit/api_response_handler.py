@@ -217,8 +217,10 @@ class ApiResponseHandler:
 
         # If results is not a dict, set to None to satisfy type hint
         results_dict: Optional[Dict[str, object]] = None
-        if isinstance(results, dict):
-            results_dict = results if isinstance(results, dict) else None
+        if isinstance(results, dict) and all(
+            isinstance(k, str) for k in results.keys()
+        ):
+            results_dict = results  # type: ignore[assignment]
 
         return self._format_response(
             response=response, results=results_dict, message=message, status=status
