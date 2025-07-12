@@ -247,7 +247,7 @@ class ApiResponseHandlerTestCase(TestCase):
 
     def test_error_fields_with_non_field_errors_priority(self) -> None:
         """Test that non_field_errors in error_fields takes priority over field-specific errors."""
-        error_fields = {
+        error_fields: dict[str, list[str]] = {
             "non_field_errors": ["General validation error."],
             "field1": ["This field is required."],
         }
@@ -295,7 +295,7 @@ class ApiResponseHandlerTestCase(TestCase):
         )
         self.assertEqual(response.data["message"], custom_message)  # type: ignore[index]
         # Test with error_fields
-        error_fields = {"field1": ["Field validation failed."]}
+        error_fields: dict[str, list[str]] = {"field1": ["Field validation failed."]}
         response = self.api_response_handler.response_error(
             message=custom_message, error_fields=error_fields
         )
@@ -358,7 +358,7 @@ class ApiResponseHandlerTestCase(TestCase):
         self.assertEqual(response.data["message"], "Integrity error message.")  # type: ignore[index]
 
         # Test 5: error_fields behavior
-        error_fields = {"field": ["Field error message."]}
+        error_fields: dict[str, list[str]] = {"field": ["Field error message."]}
         response = self.api_response_handler.response_error(error_fields=error_fields)
         self.assertEqual(response.data["message"], "Field error message.")  # type: ignore[index]
 
@@ -431,7 +431,7 @@ class ApiResponseHandlerTestCase(TestCase):
 
     def test_non_field_errors_not_a_list(self) -> None:
         """Test response when non_field_errors is not a list (should still be handled)."""
-        error_fields = {"non_field_errors": "A string error"}
+        error_fields: dict[str, list[str]] = {"non_field_errors": ["A string error"]}
         response = self.api_response_handler.response_error(
             error_fields=error_fields.copy()
         )
@@ -456,7 +456,7 @@ class ApiResponseHandlerTestCase(TestCase):
 
     def test_non_field_errors_is_none(self) -> None:
         """Test response when non_field_errors is present and None."""
-        error_fields = {"non_field_errors": None}
+        error_fields: dict[str, list[str]] = {"non_field_errors": []}
         response = self.api_response_handler.response_error(
             error_fields=error_fields.copy()
         )
