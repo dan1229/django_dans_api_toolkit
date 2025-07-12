@@ -1,5 +1,6 @@
 from django.test import TestCase
 from ..api_response import ApiResponse
+from typing import Any
 
 
 class ApiResponseTestCase(TestCase):
@@ -15,7 +16,7 @@ class ApiResponseTestCase(TestCase):
     def test_initialization_with_values(self) -> None:
         status = 200
         message = "Success"
-        results = {"key": "value"}
+        results: dict[str, Any] = {"key": "value"}
         error_fields = {"field": ["error"]}
         extras = {"extra_key": "extra_value"}
 
@@ -49,7 +50,7 @@ class ApiResponseTestCase(TestCase):
     def test_dict_method_with_values(self) -> None:
         status = 200
         message = "Success"
-        results = {"key": "value"}
+        results: dict[str, Any] = {"key": "value"}
         error_fields = {"field": ["error"]}
         extras = {"extra_key": "extra_value"}
 

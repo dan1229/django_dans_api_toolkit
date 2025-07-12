@@ -70,6 +70,16 @@
 ### [1.2.0] - 2025-MM-DD
 - TODO
 
+---
+
+
+
+### [1.1.2] - 2025-07-11
+- Fixed: Paginated API responses now preserve DRF's top-level pagination keys (`count`, `next`, `previous`, `results`).
+    - Ensures full compatibility with DRF clients, tests, and third-party tools expecting standard pagination structure.
+    - Custom fields (`status`, `message`, etc.) are still included at the top level.
+- This update resolves issues where `count` and other pagination keys were missing from responses, breaking some client integrations and tests.
+
 -------------------------------------------------------
 
 ##### Copyright 2025 © Daniel Nazarian.

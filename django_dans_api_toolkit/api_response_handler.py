@@ -44,17 +44,17 @@ class ApiResponseHandler:
     @staticmethod
     def _format_response(
         response: Optional[Response] = None,
-        results: Optional[Union[object, Dict[Any, Any], List[Any]]] = None,
+        results: Optional[Union[Dict[str, object], List[object]]] = None,
         message: Optional[str] = None,
         status: Optional[int] = None,
-        error_fields: Optional[Dict[Any, Any]] = None,
-        non_field_errors: Optional[List[Any]] = None,
+        error_fields: Optional[Dict[str, List[str]]] = None,
+        non_field_errors: Optional[List[str]] = None,
     ) -> Response:
         """Internal function to format responses.
 
         Args:
             response (Response): Existing DRF response object to use for response.
-            results (list): List of results to include in response.
+            results (dict or list): Results to include in response.
             message (str): Message to include in response.
             status (int): Status to use in response.
             error_fields (dict, optional): Dictionary of field errors to include - typically provided by Django exceptions. Defaults to None.
@@ -70,8 +70,15 @@ class ApiResponseHandler:
             error_fields=error_fields,
             non_field_errors=non_field_errors,
         )
-        if response:  # response passed -> simply edit
-            api_response.extras = response.data
+        if response:
+            # Only assign extras if response.data is a dict (as expected in our usage)
+            if isinstance(response.data, dict):
+                api_response.extras = response.data
+            else:
+                api_response.extras = None
+                DEFAULT_LOGGER.warning(
+                    f"ApiResponseHandler: response.data was not a dict (got {type(response.data).__name__}), extras set to None. This is unexpected and should be fixed."
+                )
         return Response(api_response.dict(), status=status)
 
     def _handle_logging(
@@ -198,13 +205,13 @@ class ApiResponseHandler:
     def response_success(
         self,
         message: Optional[str] = None,
-        results: Optional[Union[object, Dict[Any, Any], List[Any]]] = None,
+        results: Optional[Union[Dict[str, object], List[object]]] = None,
         response: Optional[Response] = None,
         status: Optional[int] = HTTP_200_OK,
     ) -> Response:
         """
         :param str message: message to include in response
-        :param object results: results object/list to include in response
+        :param dict or list results: results object/list to include in response
         :param Response response: response object to simply edit
         :param int status: HTTP status to use
 
@@ -215,8 +222,13 @@ class ApiResponseHandler:
         if not message:
             message = self.message_success
 
+        # Allow both dict and list as valid results
+        results_out: Optional[Union[Dict[str, object], List[object]]] = None
+        if isinstance(results, (dict, list)):
+            results_out = results
+
         return self._format_response(
-            response=response, results=results, message=message, status=status
+            response=response, results=results_out, message=message, status=status
         )
 
     #
@@ -225,9 +237,9 @@ class ApiResponseHandler:
     def response_error(
         self,
         error: Optional[Union[str, Exception]] = None,
-        error_fields: Optional[Dict[Any, Any]] = None,
+        error_fields: Optional[Dict[str, List[str]]] = None,
         message: Optional[str] = None,
-        results: Optional[Union[object, Dict[Any, Any], List[Any]]] = None,
+        results: Optional[Union[Dict[str, object], List[object]]] = None,
         response: Optional[Response] = None,
         status: Optional[int] = HTTP_400_BAD_REQUEST,
         print_log: Optional[bool] = True,
@@ -236,7 +248,7 @@ class ApiResponseHandler:
         :param str|Exception error: error message to log
         :param dict error_fields: list of fields to include in error response
         :param str message: message to include in response
-        :param object results: results object/list to include in response
+        :param dict or list results: results object/list to include in response
         :param Response response: response object to simply edit
         :param int status: HTTP status to use
         :param bool print_log: override whether to print this error
