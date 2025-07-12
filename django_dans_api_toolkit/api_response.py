@@ -52,18 +52,32 @@ class ApiResponse:
         :returns: Dict containing ApiResponse object info
         :rtype: dict
         """
+        # If results is a paginated DRF response, merge those keys at the top level
+        if isinstance(self.results, dict) and set(
+            ["count", "next", "previous", "results"]
+        ).issubset(self.results.keys()):
+            res = {
+                "status": self.status,
+                "message": self.message,
+                **{
+                    k: self.results[k] for k in ["count", "next", "previous", "results"]
+                },
+            }
+            res["error_fields"] = self.error_fields if self.error_fields else None
+            if self.non_field_errors:
+                res["non_field_errors"] = self.non_field_errors
+            if self.extras:
+                res["extras"] = self.extras
+            return res
+        # Otherwise, use the standard structure
         res = {
             "status": self.status,
             "message": self.message,
             "results": self.results,
         }
-        # Only include error_fields if truthy, else set to None
         res["error_fields"] = self.error_fields if self.error_fields else None
-        # Only include non_field_errors if truthy
         if self.non_field_errors:
             res["non_field_errors"] = self.non_field_errors
-
-        # extra fields to include in the response
         if self.extras:
             res["extras"] = self.extras
         return res
