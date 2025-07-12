@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Union, cast
+from typing import Any, Dict, List, Optional, Union
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from rest_framework.response import Response
@@ -218,7 +218,7 @@ class ApiResponseHandler:
         # If results is not a dict, set to None to satisfy type hint
         results_dict: Optional[Dict[str, object]] = None
         if isinstance(results, dict):
-            results_dict = cast(Dict[str, object], results)
+            results_dict = results
 
         return self._format_response(
             response=response, results=results_dict, message=message, status=status
