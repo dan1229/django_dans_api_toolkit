@@ -385,9 +385,10 @@ class ApiResponseHandlerTestCase(TestCase):
         response = self.api_response_handler.response_error(
             error_fields=error_fields.copy()
         )
-        self.assertIn("non_field_errors", response.data)
-        self.assertEqual(response.data["non_field_errors"], ["General error."])
-        self.assertIsNone(response.data["error_fields"])
+        data = cast(Dict[str, Any], response.data)
+        self.assertIn("non_field_errors", data)
+        self.assertEqual(data["non_field_errors"], ["General error."])
+        self.assertIsNone(data["error_fields"])
 
     def test_only_field_errors(self) -> None:
         """Test response when only field errors are present."""
@@ -395,8 +396,9 @@ class ApiResponseHandlerTestCase(TestCase):
         response = self.api_response_handler.response_error(
             error_fields=error_fields.copy()
         )
-        self.assertNotIn("non_field_errors", response.data)
-        self.assertEqual(response.data["error_fields"], {"field": ["Field error."]})
+        data = cast(Dict[str, Any], response.data)
+        self.assertNotIn("non_field_errors", data)
+        self.assertEqual(data["error_fields"], {"field": ["Field error."]})
 
     def test_both_non_field_and_field_errors(self) -> None:
         """Test response when both non_field_errors and field errors are present."""
@@ -407,9 +409,10 @@ class ApiResponseHandlerTestCase(TestCase):
         response = self.api_response_handler.response_error(
             error_fields=error_fields.copy()
         )
-        self.assertIn("non_field_errors", response.data)
-        self.assertEqual(response.data["non_field_errors"], ["General error."])
-        self.assertEqual(response.data["error_fields"], {"field": ["Field error."]})
+        data = cast(Dict[str, Any], response.data)
+        self.assertIn("non_field_errors", data)
+        self.assertEqual(data["non_field_errors"], ["General error."])
+        self.assertEqual(data["error_fields"], {"field": ["Field error."]})
 
     def test_both_present_but_non_field_errors_empty(self) -> None:
         """Test response when both present but non_field_errors is empty."""
@@ -418,8 +421,9 @@ class ApiResponseHandlerTestCase(TestCase):
             error_fields=error_fields.copy()
         )
         # Should not include non_field_errors if empty
-        self.assertNotIn("non_field_errors", response.data)
-        self.assertEqual(response.data["error_fields"], {"field": ["Field error."]})
+        data = cast(Dict[str, Any], response.data)
+        self.assertNotIn("non_field_errors", data)
+        self.assertEqual(data["error_fields"], {"field": ["Field error."]})
 
     def test_non_field_errors_not_a_list(self) -> None:
         """Test response when non_field_errors is not a list (should still be handled)."""
@@ -427,21 +431,24 @@ class ApiResponseHandlerTestCase(TestCase):
         response = self.api_response_handler.response_error(
             error_fields=error_fields.copy()
         )
-        self.assertIn("non_field_errors", response.data)
-        self.assertEqual(response.data["non_field_errors"], "A string error")
-        self.assertIsNone(response.data["error_fields"])
+        data = cast(Dict[str, Any], response.data)
+        self.assertIn("non_field_errors", data)
+        self.assertEqual(data["non_field_errors"], "A string error")
+        self.assertIsNone(data["error_fields"])
 
     def test_error_fields_is_none(self) -> None:
         """Test response when error_fields is None."""
         response = self.api_response_handler.response_error(error_fields=None)
-        self.assertNotIn("non_field_errors", response.data)
-        self.assertIsNone(response.data["error_fields"])
+        data = cast(Dict[str, Any], response.data)
+        self.assertNotIn("non_field_errors", data)
+        self.assertIsNone(data["error_fields"])
 
     def test_error_fields_is_empty_dict(self) -> None:
         """Test response when error_fields is an empty dict."""
         response = self.api_response_handler.response_error(error_fields={})
-        self.assertNotIn("non_field_errors", response.data)
-        self.assertIsNone(response.data["error_fields"])
+        data = cast(Dict[str, Any], response.data)
+        self.assertNotIn("non_field_errors", data)
+        self.assertIsNone(data["error_fields"])
 
     def test_non_field_errors_is_none(self) -> None:
         """Test response when non_field_errors is present and None."""
@@ -450,11 +457,13 @@ class ApiResponseHandlerTestCase(TestCase):
             error_fields=error_fields.copy()
         )
         # Should not include non_field_errors if None
-        self.assertNotIn("non_field_errors", response.data)
-        self.assertIsNone(response.data["error_fields"])
+        data = cast(Dict[str, Any], response.data)
+        self.assertNotIn("non_field_errors", data)
+        self.assertIsNone(data["error_fields"])
 
     def test_both_missing(self) -> None:
         """Test response when both error_fields and non_field_errors are missing."""
         response = self.api_response_handler.response_error()
-        self.assertNotIn("non_field_errors", response.data)
-        self.assertIsNone(response.data["error_fields"])
+        data = cast(Dict[str, Any], response.data)
+        self.assertNotIn("non_field_errors", data)
+        self.assertIsNone(data["error_fields"])

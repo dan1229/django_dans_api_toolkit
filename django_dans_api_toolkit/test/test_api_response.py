@@ -24,7 +24,7 @@ class ApiResponseTestCase(TestCase):
             message=message,
             results=results,
             error_fields=error_fields,
-            **extras
+            extras=extras,
         )
 
         self.assertEqual(response.status, status)
@@ -58,7 +58,7 @@ class ApiResponseTestCase(TestCase):
             message=message,
             results=results,
             error_fields=error_fields,
-            **extras
+            extras=extras,
         )
         response_dict = response.dict()
 
