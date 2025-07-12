@@ -19,3 +19,4 @@ __pycache__/
 __pycache__
 *.pyc
 *$py.class
+.mypy_cache/

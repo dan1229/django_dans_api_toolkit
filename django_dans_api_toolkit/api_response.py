@@ -1,4 +1,4 @@
-from typing import Any, Optional, Union, Dict, List
+from typing import Optional, Dict, List, Union
 
 """
 ============================================================================================ #
@@ -17,19 +17,19 @@ class ApiResponse:
 
     status: int
     message: Optional[str]
-    results: Optional[Union[object, Dict[Any, Any], List[Any]]]
-    error_fields: Optional[Dict[Any, Any]]
-    non_field_errors: Optional[List[Any]]
-    extras: Union[Dict[Any, Any], object]
+    results: Optional[Union[Dict[str, object], List[object]]]
+    error_fields: Optional[Dict[str, List[str]]]
+    non_field_errors: Optional[List[str]]
+    extras: Optional[Dict[str, object]]
 
     def __init__(
         self,
         status: Optional[int] = None,
         message: Optional[str] = None,
-        results: Optional[Union[object, Dict[Any, Any], List[Any]]] = None,
-        error_fields: Optional[Dict[Any, Any]] = None,
-        non_field_errors: Optional[List[Any]] = None,
-        **kwargs: Any
+        results: Optional[Union[Dict[str, object], List[object]]] = None,
+        error_fields: Optional[Dict[str, List[str]]] = None,
+        non_field_errors: Optional[List[str]] = None,
+        **kwargs: object
     ) -> None:
         if not status:
             # if status is not provided, we assume error
@@ -43,9 +43,9 @@ class ApiResponse:
         extras = kwargs.pop("extras", None)
         if isinstance(extras, dict):
             kwargs.update(extras)
-        self.extras = kwargs
+        self.extras = kwargs if kwargs else None
 
-    def dict(self) -> Dict[Any, Any]:
+    def dict(self) -> Dict[str, Optional[object]]:
         """
         Convert ApiResponse to dict. Primarily to use in actual Response object.
 
@@ -56,7 +56,7 @@ class ApiResponse:
         :returns: Dict containing ApiResponse object info
         :rtype: dict
         """
-        res: Dict[Any, Any]
+        res: Dict[str, Optional[object]]
         # If results is a paginated DRF response, merge those keys at the top level
         if isinstance(self.results, dict) and set(
             ["count", "next", "previous", "results"]
@@ -64,9 +64,10 @@ class ApiResponse:
             res = {
                 "status": self.status,
                 "message": self.message,
-                **{
-                    k: self.results[k] for k in ["count", "next", "previous", "results"]
-                },
+                "count": self.results["count"],
+                "next": self.results["next"],
+                "previous": self.results["previous"],
+                "results": self.results["results"],
             }
         else:
             res = {
@@ -75,9 +76,11 @@ class ApiResponse:
                 "results": self.results,
             }
         # Add error_fields, non_field_errors, and extras in both cases
-        res["error_fields"] = self.error_fields if self.error_fields else None
-        if self.non_field_errors:
+        res["error_fields"] = (
+            self.error_fields if self.error_fields is not None else None
+        )
+        if self.non_field_errors is not None:
             res["non_field_errors"] = self.non_field_errors
-        if self.extras:
+        if self.extras is not None:
             res["extras"] = self.extras
         return res
