@@ -75,27 +75,8 @@
 ### 1.1.1
 
 
-`non_field_errors` is getting shoved into `error_fields`:
 
-
-```
-{'status': 400, 'message': 'Error creating scouting invite.', 'results': None, 'error_fields': {'non_field_errors': [ErrorDetail(string='You have too many pending scouting invites (limit: 5). Please wait for responses before sending more.', code='invalid')]}}
-```
-
-something like this should pass
-
-```
-        data = {"recipient": str(candidate.id), "message": "Test invite"}
-        response = client.post("/api/scouting/invites/", data, format="json")
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(
-            "too many pending scouting invites",
-            response.data["non_field_errors"][0].lower(),
-        )
-```
-
-
-### [1.1.1] - 2025-MM-DD
+### [1.1.1] - 2025-07-11
 - `non_field_errors` are now always returned as a top-level key in API responses, matching DRF conventions.
     - They are no longer included inside `error_fields`. This ensures compatibility with DRF clients and old tests, and improves error clarity.
 
