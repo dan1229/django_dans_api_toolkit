@@ -438,7 +438,8 @@ class ApiResponseHandlerTestCase(TestCase):
 
     def test_non_field_errors_not_a_list(self) -> None:
         """Test response when non_field_errors is not a list (should still be handled)."""
-        error_fields: dict[str, list[str]] = {"non_field_errors": ["A string error"]}
+        # Pass a string instead of a list for non_field_errors
+        error_fields = {"non_field_errors": "A string error"}
         response = self.api_response_handler.response_error(error_fields=error_fields)
         self.assertIn("non_field_errors", response.data)
         self.assertEqual(response.data["non_field_errors"], ["A string error"])
