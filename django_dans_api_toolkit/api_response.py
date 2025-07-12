@@ -43,7 +43,7 @@ class ApiResponse:
         extras = kwargs.pop("extras", None)
         if isinstance(extras, dict):
             kwargs.update(extras)
-        self.extras = kwargs if kwargs else None
+        self.extras = kwargs
 
     def dict(self) -> Dict[str, Optional[object]]:
         """
