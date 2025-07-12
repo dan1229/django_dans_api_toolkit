@@ -215,8 +215,13 @@ class ApiResponseHandler:
         if not message:
             message = self.message_success
 
+        # If results is not a dict, set to None to satisfy type hint
+        results_dict: Optional[Dict[str, object]] = None
+        if isinstance(results, dict):
+            results_dict = results
+
         return self._format_response(
-            response=response, results=results, message=message, status=status
+            response=response, results=results_dict, message=message, status=status
         )
 
     #
