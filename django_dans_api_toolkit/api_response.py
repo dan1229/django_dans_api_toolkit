@@ -81,6 +81,6 @@ class ApiResponse:
         )
         if self.non_field_errors is not None:
             res["non_field_errors"] = self.non_field_errors
-        if self.extras is not None:
+        if self.extras:
             res["extras"] = self.extras
         return res
