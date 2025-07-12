@@ -49,9 +49,14 @@ class ApiResponse:
         """
         Convert ApiResponse to dict. Primarily to use in actual Response object.
 
+        - For paginated DRF responses (dicts with 'count', 'next', 'previous', 'results'),
+          merges those keys into the top-level dict alongside custom fields.
+        - For non-paginated responses, uses the standard structure.
+
         :returns: Dict containing ApiResponse object info
         :rtype: dict
         """
+        res: Dict[Any, Any]
         # If results is a paginated DRF response, merge those keys at the top level
         if isinstance(self.results, dict) and set(
             ["count", "next", "previous", "results"]
@@ -63,18 +68,13 @@ class ApiResponse:
                     k: self.results[k] for k in ["count", "next", "previous", "results"]
                 },
             }
-            res["error_fields"] = self.error_fields if self.error_fields else None
-            if self.non_field_errors:
-                res["non_field_errors"] = self.non_field_errors
-            if self.extras:
-                res["extras"] = self.extras
-            return res
-        # Otherwise, use the standard structure
-        res = {
-            "status": self.status,
-            "message": self.message,
-            "results": self.results,
-        }
+        else:
+            res = {
+                "status": self.status,
+                "message": self.message,
+                "results": self.results,
+            }
+        # Add error_fields, non_field_errors, and extras in both cases
         res["error_fields"] = self.error_fields if self.error_fields else None
         if self.non_field_errors:
             res["non_field_errors"] = self.non_field_errors
