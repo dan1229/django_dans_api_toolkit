@@ -5,7 +5,7 @@ from django.db import IntegrityError
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from unittest.mock import MagicMock
 from ..api_response_handler import ApiResponseHandler
-from typing import Any, Dict, cast
+from typing import Dict, cast
 
 
 class ApiResponseHandlerTestCase(TestCase):
@@ -27,7 +27,7 @@ class ApiResponseHandlerTestCase(TestCase):
         self.assertEqual(response.data["message"], custom_message)  # type: ignore[index]
 
     def test_response_success_with_results(self) -> None:
-        results: dict[str, Any] = {"key": "value"}
+        results: dict[str, object] = {"key": "value"}
         response = self.api_response_handler.response_success(results=results)
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(response.data["results"], results)  # type: ignore[index]
@@ -73,19 +73,19 @@ class ApiResponseHandlerTestCase(TestCase):
             self.assertIn(f"{custom_message} - {error}", cm.output[0])
 
     def test_response_success_with_extra_data(self) -> None:
-        extra_data: dict[str, Any] = {"extra_key": "extra_value"}
+        extra_data: dict[str, object] = {"extra_key": "extra_value"}
         response = self.api_response_handler.response_success(results=extra_data)
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(response.data["results"], extra_data)  # type: ignore[index]
 
     def test_response_error_with_results(self) -> None:
-        results: dict[str, Any] = {"error_key": "error_value"}
+        results: dict[str, object] = {"error_key": "error_value"}
         response = self.api_response_handler.response_error(results=results)
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["results"], results)  # type: ignore[index]
 
     def test_response_success_with_mixed_results(self) -> None:
-        results: dict[str, Any] = {
+        results: dict[str, object] = {
             "key": "value",
             "list": [1, 2, 3],
             "dict": {"inner_key": "inner_value"},
@@ -373,7 +373,7 @@ class ApiResponseHandlerTestCase(TestCase):
         response = self.api_response_handler.response_error(
             error_fields=error_fields.copy()
         )
-        data = cast(Dict[str, Any], response.data)
+        data = cast(Dict[str, object], response.data)
         self.assertIn("non_field_errors", data)
         self.assertEqual(
             data["non_field_errors"],
@@ -389,7 +389,7 @@ class ApiResponseHandlerTestCase(TestCase):
         response = self.api_response_handler.response_error(
             error_fields=error_fields.copy()
         )
-        data = cast(Dict[str, Any], response.data)
+        data = cast(Dict[str, object], response.data)
         self.assertIn("non_field_errors", data)
         self.assertEqual(data["non_field_errors"], ["General error."])
         self.assertIsNone(data["error_fields"])
@@ -400,7 +400,7 @@ class ApiResponseHandlerTestCase(TestCase):
         response = self.api_response_handler.response_error(
             error_fields=error_fields.copy()
         )
-        data = cast(Dict[str, Any], response.data)
+        data = cast(Dict[str, object], response.data)
         self.assertNotIn("non_field_errors", data)
         self.assertEqual(data["error_fields"], {"field": ["Field error."]})
 
@@ -413,7 +413,7 @@ class ApiResponseHandlerTestCase(TestCase):
         response = self.api_response_handler.response_error(
             error_fields=error_fields.copy()
         )
-        data = cast(Dict[str, Any], response.data)
+        data = cast(Dict[str, object], response.data)
         self.assertIn("non_field_errors", data)
         self.assertEqual(data["non_field_errors"], ["General error."])
         self.assertEqual(data["error_fields"], {"field": ["Field error."]})
@@ -428,7 +428,7 @@ class ApiResponseHandlerTestCase(TestCase):
             error_fields=error_fields.copy()
         )
         # Should not include non_field_errors if empty
-        data = cast(Dict[str, Any], response.data)
+        data = cast(Dict[str, object], response.data)
         self.assertNotIn("non_field_errors", data)
         self.assertEqual(data["error_fields"], {"field": ["Field error."]})
 
@@ -436,21 +436,21 @@ class ApiResponseHandlerTestCase(TestCase):
         """Test response when non_field_errors is not a list (should still be handled)."""
         error_fields: dict[str, list[str]] = {"non_field_errors": ["A string error"]}
         response = self.api_response_handler.response_error(error_fields=error_fields)
-        data = response.data
+        data = cast(Dict[str, object], response.data)
         self.assertIn("non_field_errors", data)
         self.assertEqual(data["non_field_errors"], ["A string error"])
 
     def test_error_fields_is_none(self) -> None:
         """Test response when error_fields is None."""
         response = self.api_response_handler.response_error(error_fields=None)
-        data = cast(Dict[str, Any], response.data)
+        data = cast(Dict[str, object], response.data)
         self.assertNotIn("non_field_errors", data)
         self.assertIsNone(data["error_fields"])
 
     def test_error_fields_is_empty_dict(self) -> None:
         """Test response when error_fields is an empty dict."""
         response = self.api_response_handler.response_error(error_fields={})
-        data = cast(Dict[str, Any], response.data)
+        data = cast(Dict[str, object], response.data)
         self.assertNotIn("non_field_errors", data)
         self.assertIsNone(data["error_fields"])
 
@@ -461,13 +461,13 @@ class ApiResponseHandlerTestCase(TestCase):
             error_fields=error_fields.copy()
         )
         # Should not include non_field_errors if None
-        data = cast(Dict[str, Any], response.data)
+        data = cast(Dict[str, object], response.data)
         self.assertNotIn("non_field_errors", data)
         self.assertIsNone(data["error_fields"])
 
     def test_both_missing(self) -> None:
         """Test response when both error_fields and non_field_errors are missing."""
         response = self.api_response_handler.response_error()
-        data = cast(Dict[str, Any], response.data)
+        data = cast(Dict[str, object], response.data)
         self.assertNotIn("non_field_errors", data)
         self.assertIsNone(data["error_fields"])

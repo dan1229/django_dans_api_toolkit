@@ -198,7 +198,7 @@ class ApiResponseHandler:
     def response_success(
         self,
         message: Optional[str] = None,
-        results: Optional[Union[Dict[str, Any], List[Any]]] = None,
+        results: Optional[Union[Dict[str, object], List[object]]] = None,
         response: Optional[Response] = None,
         status: Optional[int] = HTTP_200_OK,
     ) -> Response:
@@ -216,9 +216,9 @@ class ApiResponseHandler:
             message = self.message_success
 
         # If results is not a dict, set to None to satisfy type hint
-        results_dict: Optional[Dict[str, Any]] = None
+        results_dict: Optional[Dict[str, object]] = None
         if isinstance(results, dict):
-            results_dict = results
+            results_dict = results if isinstance(results, dict) else None
 
         return self._format_response(
             response=response, results=results_dict, message=message, status=status
@@ -232,7 +232,7 @@ class ApiResponseHandler:
         error: Optional[Union[str, Exception]] = None,
         error_fields: Optional[Dict[str, List[str]]] = None,
         message: Optional[str] = None,
-        results: Optional[Union[Dict[str, Any], List[Any]]] = None,
+        results: Optional[Union[Dict[str, object], List[object]]] = None,
         response: Optional[Response] = None,
         status: Optional[int] = HTTP_400_BAD_REQUEST,
         print_log: Optional[bool] = True,

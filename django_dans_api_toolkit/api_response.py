@@ -1,4 +1,4 @@
-from typing import Optional, Dict, List, Union, Any
+from typing import Optional, Dict, List, Union
 
 """
 ============================================================================================ #
@@ -17,19 +17,19 @@ class ApiResponse:
 
     status: int
     message: Optional[str]
-    results: Optional[Union[Dict[str, Any], List[Any]]]
+    results: Optional[Union[Dict[str, object], List[object]]]
     error_fields: Optional[Dict[str, List[str]]]
     non_field_errors: Optional[List[str]]
-    extras: Optional[Dict[str, Any]]
+    extras: Optional[Dict[str, object]]
 
     def __init__(
         self,
         status: Optional[int] = None,
         message: Optional[str] = None,
-        results: Optional[Union[Dict[str, Any], List[Any]]] = None,
+        results: Optional[Union[Dict[str, object], List[object]]] = None,
         error_fields: Optional[Dict[str, List[str]]] = None,
         non_field_errors: Optional[Union[str, List[str]]] = None,
-        **kwargs: Any
+        **kwargs: object
     ) -> None:
         if not status:
             # if status is not provided, we assume error
@@ -49,7 +49,7 @@ class ApiResponse:
             kwargs.update(extras)
         self.extras = kwargs
 
-    def dict(self) -> Dict[str, Optional[Any]]:
+    def dict(self) -> Dict[str, Optional[object]]:
         """
         Convert ApiResponse to dict. Primarily to use in actual Response object.
 
@@ -60,7 +60,7 @@ class ApiResponse:
         :returns: Dict containing ApiResponse object info
         :rtype: dict
         """
-        res: Dict[str, Optional[Any]]
+        res: Dict[str, Optional[object]]
         # If results is a paginated DRF response, merge those keys at the top level
         if isinstance(self.results, dict) and set(
             ["count", "next", "previous", "results"]
