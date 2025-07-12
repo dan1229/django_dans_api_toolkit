@@ -48,6 +48,7 @@ class ApiResponseHandler:
         message: Optional[str] = None,
         status: Optional[int] = None,
         error_fields: Optional[Dict[Any, Any]] = None,
+        non_field_errors: Optional[List[Any]] = None,
     ) -> Response:
         """Internal function to format responses.
 
@@ -57,12 +58,17 @@ class ApiResponseHandler:
             message (str): Message to include in response.
             status (int): Status to use in response.
             error_fields (dict, optional): Dictionary of field errors to include - typically provided by Django exceptions. Defaults to None.
+            non_field_errors (list, optional): List of non-field errors to include as top-level key.
 
         Returns:
             Response: DRF response object with desired format - can be used directly in views
         """
         api_response = ApiResponse(
-            message=message, status=status, results=results, error_fields=error_fields
+            message=message,
+            status=status,
+            results=results,
+            error_fields=error_fields,
+            non_field_errors=non_field_errors,
         )
         if response:  # response passed -> simply edit
             api_response.extras = response.data
@@ -272,6 +278,14 @@ class ApiResponseHandler:
         elif message:
             self._handle_logging(message, print_log)
 
+        # Extract non_field_errors from error_fields if present
+        non_field_errors = None
+        if error_fields and "non_field_errors" in error_fields:
+            non_field_errors = error_fields.pop("non_field_errors")
+            # If error_fields is now empty, set to None
+            if not error_fields:
+                error_fields = None
+
         # Handle response
         return self._format_response(
             response=response,
@@ -279,4 +293,5 @@ class ApiResponseHandler:
             message=message_res,
             status=status,
             error_fields=error_fields,
+            non_field_errors=non_field_errors,
         )

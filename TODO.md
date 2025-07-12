@@ -96,8 +96,8 @@ something like this should pass
 
 
 ### [1.1.1] - 2025-MM-DD
-- TODO
-
+- `non_field_errors` are now always returned as a top-level key in API responses, matching DRF conventions.
+    - They are no longer included inside `error_fields`. This ensures compatibility with DRF clients and old tests, and improves error clarity.
 
 -------------------------------------------------------
 
