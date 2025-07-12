@@ -48,6 +48,7 @@ class ApiResponseHandler:
         message: Optional[str] = None,
         status: Optional[int] = None,
         error_fields: Optional[Dict[Any, Any]] = None,
+        non_field_errors: Optional[List[Any]] = None,
     ) -> Response:
         """Internal function to format responses.
 
@@ -57,12 +58,17 @@ class ApiResponseHandler:
             message (str): Message to include in response.
             status (int): Status to use in response.
             error_fields (dict, optional): Dictionary of field errors to include - typically provided by Django exceptions. Defaults to None.
+            non_field_errors (list, optional): List of non-field errors to include as top-level key.
 
         Returns:
             Response: DRF response object with desired format - can be used directly in views
         """
         api_response = ApiResponse(
-            message=message, status=status, results=results, error_fields=error_fields
+            message=message,
+            status=status,
+            results=results,
+            error_fields=error_fields,
+            non_field_errors=non_field_errors,
         )
         if response:  # response passed -> simply edit
             api_response.extras = response.data
@@ -79,11 +85,12 @@ class ApiResponseHandler:
             exception (Exception, optional): Exception object to log with stack trace. Defaults to None.
         """
         if print_log:
+            logger = self.logger or DEFAULT_LOGGER
             # Let logging handle stack info automatically - more efficient than inspect.stack()
             if exception is not None:
-                self.logger.error(msg, exc_info=True, stack_info=True)
+                logger.error(msg, exc_info=True, stack_info=True)
             else:
-                self.logger.error(msg, stack_info=True)
+                logger.error(msg, stack_info=True)
 
     def _parse_validation_error_message(
         self,
@@ -272,11 +279,26 @@ class ApiResponseHandler:
         elif message:
             self._handle_logging(message, print_log)
 
+        # Extract non_field_errors from error_fields if present, without mutating input
+        non_field_errors = None
+        error_fields_copy = None
+        if error_fields:
+            error_fields_copy = error_fields.copy()
+            if "non_field_errors" in error_fields_copy:
+                candidate = error_fields_copy.pop("non_field_errors")
+                if candidate:  # Only include if truthy (not None, not empty)
+                    non_field_errors = candidate
+            if not error_fields_copy:
+                error_fields_copy = None
+        else:
+            error_fields_copy = None
+
         # Handle response
         return self._format_response(
             response=response,
             results=results,
             message=message_res,
             status=status,
-            error_fields=error_fields,
+            error_fields=error_fields_copy,
+            non_field_errors=non_field_errors,
         )

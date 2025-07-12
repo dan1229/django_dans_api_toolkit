@@ -24,7 +24,7 @@ class ApiResponseTestCase(TestCase):
             message=message,
             results=results,
             error_fields=error_fields,
-            **extras
+            extras=extras,
         )
 
         self.assertEqual(response.status, status)
@@ -58,7 +58,7 @@ class ApiResponseTestCase(TestCase):
             message=message,
             results=results,
             error_fields=error_fields,
-            **extras
+            extras=extras,
         )
         response_dict = response.dict()
 
@@ -67,7 +67,7 @@ class ApiResponseTestCase(TestCase):
             "message": message,
             "results": results,
             "error_fields": error_fields,
-            "extra_key": "extra_value",
+            "extras": {"extra_key": "extra_value"},
         }
 
         self.assertEqual(response_dict, expected_dict)
@@ -81,8 +81,7 @@ class ApiResponseTestCase(TestCase):
             "message": None,
             "results": None,
             "error_fields": None,
-            "extra1": "value1",
-            "extra2": "value2",
+            "extras": {"extra1": "value1", "extra2": "value2"},
         }
 
         self.assertEqual(response_dict, expected_dict)
