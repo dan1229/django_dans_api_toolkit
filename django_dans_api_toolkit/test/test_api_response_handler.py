@@ -381,7 +381,9 @@ class ApiResponseHandlerTestCase(TestCase):
                 "You have too many pending scouting invites (limit: 5). Please wait for responses before sending more."
             ],
         )
-        self.assertNotIn("non_field_errors", data["error_fields"] or {})
+        self.assertNotIn(
+            "non_field_errors", cast(Dict[str, object], data["error_fields"] or {})
+        )
 
     def test_only_non_field_errors(self) -> None:
         """Test response when only non_field_errors are present."""
