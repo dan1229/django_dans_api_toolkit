@@ -27,7 +27,7 @@ class ApiResponseHandlerTestCase(TestCase):
         self.assertEqual(response.data["message"], custom_message)  # type: ignore[index]
 
     def test_response_success_with_results(self) -> None:
-        results: dict[str, object] = {"key": "value"}
+        results: dict[str, Any] = {"key": "value"}
         response = self.api_response_handler.response_success(results=results)
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(response.data["results"], results)  # type: ignore[index]
@@ -73,19 +73,19 @@ class ApiResponseHandlerTestCase(TestCase):
             self.assertIn(f"{custom_message} - {error}", cm.output[0])
 
     def test_response_success_with_extra_data(self) -> None:
-        extra_data: dict[str, object] = {"extra_key": "extra_value"}
+        extra_data: dict[str, Any] = {"extra_key": "extra_value"}
         response = self.api_response_handler.response_success(results=extra_data)
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(response.data["results"], extra_data)  # type: ignore[index]
 
     def test_response_error_with_results(self) -> None:
-        results: dict[str, object] = {"error_key": "error_value"}
+        results: dict[str, Any] = {"error_key": "error_value"}
         response = self.api_response_handler.response_error(results=results)
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["results"], results)  # type: ignore[index]
 
     def test_response_success_with_mixed_results(self) -> None:
-        results: dict[str, object] = {
+        results: dict[str, Any] = {
             "key": "value",
             "list": [1, 2, 3],
             "dict": {"inner_key": "inner_value"},
