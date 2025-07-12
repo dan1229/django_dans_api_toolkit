@@ -11,6 +11,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 -------------------------------------------------------
 ## [Released]
 
+### [1.1.2] - 2025-07-12
+- Fixed: Paginated API responses now preserve DRF's top-level pagination keys (`count`, `next`, `previous`, `results`).
+    - Ensures full compatibility with DRF clients, tests, and third-party tools expecting standard pagination structure.
+    - Custom fields (`status`, `message`, etc.) are still included at the top level.
+- This update resolves issues where `count` and other pagination keys were missing from responses, breaking some client integrations and tests.
+
+
 ### [1.1.1] - 2025-07-11
 - `non_field_errors` are now always returned as a top-level key in API responses, matching DRF conventions.
     - They are no longer included inside `error_fields`. This ensures compatibility with DRF clients and old tests, and improves error clarity.
