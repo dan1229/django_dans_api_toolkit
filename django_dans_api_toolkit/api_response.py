@@ -52,9 +52,11 @@ class ApiResponse:
             "status": self.status,
             "message": self.message,
             "results": self.results,
-            "error_fields": self.error_fields,
         }
-        if self.non_field_errors is not None:
+        # Only include error_fields if truthy, else set to None
+        res["error_fields"] = self.error_fields if self.error_fields else None
+        # Only include non_field_errors if truthy
+        if self.non_field_errors:
             res["non_field_errors"] = self.non_field_errors
 
         # extra fields to include in the response

@@ -278,13 +278,19 @@ class ApiResponseHandler:
         elif message:
             self._handle_logging(message, print_log)
 
-        # Extract non_field_errors from error_fields if present
+        # Extract non_field_errors from error_fields if present, without mutating input
         non_field_errors = None
-        if error_fields and "non_field_errors" in error_fields:
-            non_field_errors = error_fields.pop("non_field_errors")
-            # If error_fields is now empty, set to None
-            if not error_fields:
-                error_fields = None
+        error_fields_copy = None
+        if error_fields:
+            error_fields_copy = error_fields.copy()
+            if "non_field_errors" in error_fields_copy:
+                candidate = error_fields_copy.pop("non_field_errors")
+                if candidate:  # Only include if truthy (not None, not empty)
+                    non_field_errors = candidate
+            if not error_fields_copy:
+                error_fields_copy = None
+        else:
+            error_fields_copy = None
 
         # Handle response
         return self._format_response(
@@ -292,6 +298,6 @@ class ApiResponseHandler:
             results=results,
             message=message_res,
             status=status,
-            error_fields=error_fields,
+            error_fields=error_fields_copy,
             non_field_errors=non_field_errors,
         )
