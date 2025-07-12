@@ -5,6 +5,7 @@ from django.db import IntegrityError
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from unittest.mock import MagicMock
 from ..api_response_handler import ApiResponseHandler
+from typing import Any, Dict, cast
 
 
 class ApiResponseHandlerTestCase(TestCase):
@@ -368,14 +369,15 @@ class ApiResponseHandlerTestCase(TestCase):
         response = self.api_response_handler.response_error(
             error_fields=error_fields.copy()
         )
-        self.assertIn("non_field_errors", response.data)
+        data = cast(Dict[str, Any], response.data)
+        self.assertIn("non_field_errors", data)
         self.assertEqual(
-            response.data["non_field_errors"],
+            data["non_field_errors"],
             [
                 "You have too many pending scouting invites (limit: 5). Please wait for responses before sending more."
             ],
         )
-        self.assertNotIn("non_field_errors", response.data["error_fields"] or {})
+        self.assertNotIn("non_field_errors", data["error_fields"] or {})
 
     def test_only_non_field_errors(self) -> None:
         """Test response when only non_field_errors are present."""
