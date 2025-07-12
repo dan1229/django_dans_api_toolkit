@@ -19,7 +19,7 @@ class ApiResponse:
     message: Optional[str]
     results: Optional[Union[Dict[str, object], List[object]]]
     error_fields: Optional[Dict[str, List[str]]]
-    non_field_errors: Optional[Union[str, List[str]]]
+    non_field_errors: Optional[List[str]]
     extras: Optional[Dict[str, object]]
 
     def __init__(
@@ -38,7 +38,11 @@ class ApiResponse:
         self.message = message
         self.results = results
         self.error_fields = error_fields
-        self.non_field_errors = non_field_errors
+        # Always store non_field_errors as a list if provided
+        if isinstance(non_field_errors, str):
+            self.non_field_errors = [non_field_errors]
+        else:
+            self.non_field_errors = non_field_errors
         # Merge extras dict into kwargs if present
         extras = kwargs.pop("extras", None)
         if isinstance(extras, dict):
