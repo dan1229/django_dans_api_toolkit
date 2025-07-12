@@ -85,11 +85,12 @@ class ApiResponseHandler:
             exception (Exception, optional): Exception object to log with stack trace. Defaults to None.
         """
         if print_log:
+            logger = self.logger or DEFAULT_LOGGER
             # Let logging handle stack info automatically - more efficient than inspect.stack()
             if exception is not None:
-                self.logger.error(msg, exc_info=True, stack_info=True)
+                logger.error(msg, exc_info=True, stack_info=True)
             else:
-                self.logger.error(msg, stack_info=True)
+                logger.error(msg, stack_info=True)
 
     def _parse_validation_error_message(
         self,

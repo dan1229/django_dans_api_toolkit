@@ -65,9 +65,5 @@ class ApiResponse:
 
         # extra fields to include in the response
         if self.extras:
-            if isinstance(self.extras, dict):
-                for key, value in self.extras.items():
-                    res[key] = value
-            else:
-                res["extras"] = self.extras
+            res["extras"] = self.extras
         return res
