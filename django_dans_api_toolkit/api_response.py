@@ -39,6 +39,10 @@ class ApiResponse:
         self.results = results
         self.error_fields = error_fields
         self.non_field_errors = non_field_errors
+        # Merge extras dict into kwargs if present
+        extras = kwargs.pop("extras", None)
+        if isinstance(extras, dict):
+            kwargs.update(extras)
         self.extras = kwargs
 
     def dict(self) -> Dict[Any, Any]:
