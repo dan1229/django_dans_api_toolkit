@@ -70,8 +70,15 @@ class ApiResponseHandler:
             error_fields=error_fields,
             non_field_errors=non_field_errors,
         )
-        if response:  # response passed -> simply edit
-            api_response.extras = response.data
+        if response:
+            # Only assign extras if response.data is a dict (as expected in our usage)
+            if isinstance(response.data, dict):
+                api_response.extras = response.data
+            else:
+                api_response.extras = None
+                DEFAULT_LOGGER.warning(
+                    f"ApiResponseHandler: response.data was not a dict (got {type(response.data).__name__}), extras set to None. This is unexpected and should be fixed."
+                )
         return Response(api_response.dict(), status=status)
 
     def _handle_logging(
