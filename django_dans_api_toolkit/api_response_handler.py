@@ -67,7 +67,11 @@ class ApiResponseHandler:
             message=message,
             status=status,
             results=results,
-            error_fields=error_fields,
+            error_fields=(
+                error_fields
+                if error_fields is None or isinstance(error_fields, dict)
+                else None
+            ),
             non_field_errors=non_field_errors,
         )
         if response:  # response passed -> simply edit
