@@ -11,6 +11,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 -------------------------------------------------------
 ## [Released]
 
+### [1.1.1] - 2025-07-11
+- `non_field_errors` are now always returned as a top-level key in API responses, matching DRF conventions.
+    - They are no longer included inside `error_fields`. This ensures compatibility with DRF clients and old tests, and improves error clarity.
+
+    
 ### [1.1.0] - 2025-06-28
 - Improved error logging!
     - logging methods automatically pass exception data to logging handlers
