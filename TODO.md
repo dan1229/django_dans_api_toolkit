@@ -20,7 +20,7 @@
 
 
 -----
-### 1.2.0
+### 1.3.0
 
 
 
@@ -67,19 +67,19 @@
 
 
 
-### [1.2.0] - 2025-MM-DD
+### [1.3.0] - 2025-MM-DD
 - TODO
 
 
 ---
+### 1.2.0
 
 
 
 
 
 
-
-### [1.1.3] - 2025-07-13
+### [1.2.0] - 2025-07-13
 - BREAKING: API response structure has been updated for consistency and DRF compatibility.
     - `error_fields` is now always a dict (empty if no errors), never `None`.
     - `non_field_errors` is now always a list (empty if no errors), never `None` or missing.
