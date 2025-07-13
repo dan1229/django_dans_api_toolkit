@@ -80,16 +80,12 @@
 
 
 ### [1.1.3] - 2025-07-13
-- TODO
-
-
--------------------------------------------------------
-
-### [Unreleased] - API Response Structure Changes
 - BREAKING: API response structure has been updated for consistency and DRF compatibility.
     - `error_fields` is now always a dict (empty if no errors), never `None`.
     - `non_field_errors` is now always a list (empty if no errors), never `None` or missing.
     - Paginated responses always include all DRF pagination keys (`count`, `next`, `previous`, `results`) at the top level, defaulting to `None` if missing.
 - All tests and downstream compatibility have been updated to reflect these changes.
+
+-------------------------------------------------------
 
 ##### Copyright 2025 © Daniel Nazarian.
