@@ -66,6 +66,11 @@
 - coverage too i guess
 
 
+#### pagination detection should use pagination class
+- we try to detect whether or not a response is paginated
+- we should be able to detect hte pagination class being used and check for that specifically
+
+
 
 ### [1.3.0] - 2025-MM-DD
 - TODO
