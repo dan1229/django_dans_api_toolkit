@@ -11,6 +11,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 -------------------------------------------------------
 ## [Released]
 
+### [1.2.0] - 2025-07-13
+- BREAKING: API response structure has been updated for consistency and DRF compatibility.
+    - `error_fields` is now always a dict (empty if no errors), never `None`.
+    - `non_field_errors` is now always a list (empty if no errors), never `None` or missing.
+    - Paginated responses always include all DRF pagination keys (`count`, `next`, `previous`, `results`) at the top level, defaulting to `None` if missing.
+- All tests and downstream compatibility have been updated to reflect these changes.
+
+
 ### [1.1.2] - 2025-07-12
 - Fixed: Paginated API responses now preserve DRF's top-level pagination keys (`count`, `next`, `previous`, `results`).
     - Ensures full compatibility with DRF clients, tests, and third-party tools expecting standard pagination structure.
