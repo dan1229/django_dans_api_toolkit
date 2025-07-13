@@ -272,8 +272,13 @@ class ApiResponseHandlerTestCase(TestCase):
 
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["message"], "General validation error.")
-        self.assertEqual(response.data["error_fields"], error_fields)
-        self.assertEqual(response.data["non_field_errors"], [])
+        # error_fields should NOT include non_field_errors key
+        self.assertEqual(
+            response.data["error_fields"], {"field1": ["This field is required."]}
+        )
+        self.assertEqual(
+            response.data["non_field_errors"], ["General validation error."]
+        )
 
     def test_empty_error_fields_uses_default_message(self) -> None:
         """Test that empty error_fields results in default error message."""
@@ -429,7 +434,10 @@ class ApiResponseHandlerTestCase(TestCase):
             ],
         )
         self.assertNotIn("non_field_errors", response.data.get("error_fields", {}))
-        self.assertEqual(response.data["error_fields"], error_fields)
+        # error_fields should NOT include non_field_errors key
+        self.assertEqual(
+            response.data["error_fields"], {"recipient": ["This field is required."]}
+        )
 
     def test_only_non_field_errors(self) -> None:
         """Test response when only non_field_errors are present."""
@@ -469,8 +477,8 @@ class ApiResponseHandlerTestCase(TestCase):
         response = self.api_response_handler.response_error(
             error_fields=error_fields.copy()
         )
-        # Should not include non_field_errors if empty
-        self.assertNotIn("non_field_errors", response.data)
+        # non_field_errors should always be present as a list (empty if no errors)
+        self.assertEqual(response.data["non_field_errors"], [])
         self.assertEqual(response.data["error_fields"], {"field": ["Field error."]})
 
     def test_non_field_errors_not_a_list(self) -> None:

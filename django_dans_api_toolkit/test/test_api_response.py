@@ -10,7 +10,7 @@ class ApiResponseTestCase(TestCase):
         self.assertEqual(response.status, 400)
         self.assertIsNone(response.message)
         self.assertIsNone(response.results)
-        self.assertEqual(response.error_fields, {})
+        self.assertIsNone(response.error_fields)  # revert to None, matches __init__
         self.assertEqual(response.extras, {})
 
     def test_initialization_with_values(self) -> None:
@@ -69,6 +69,7 @@ class ApiResponseTestCase(TestCase):
             "message": message,
             "results": results,
             "error_fields": error_fields,
+            "non_field_errors": [],  # add this line
             "extras": {"extra_key": "extra_value"},
         }
 
