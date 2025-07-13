@@ -10,7 +10,7 @@ class ApiResponseTestCase(TestCase):
         self.assertEqual(response.status, 400)
         self.assertIsNone(response.message)
         self.assertIsNone(response.results)
-        self.assertIsNone(response.error_fields)
+        self.assertIsNone(response.error_fields)  # revert to None, matches __init__
         self.assertEqual(response.extras, {})
 
     def test_initialization_with_values(self) -> None:
@@ -38,11 +38,12 @@ class ApiResponseTestCase(TestCase):
         response = ApiResponse()
         response_dict = response.dict()
 
-        expected_dict = {
+        expected_dict: dict[str, Any] = {
             "status": 400,
             "message": None,
             "results": None,
-            "error_fields": None,
+            "error_fields": {},
+            "non_field_errors": [],
         }
 
         self.assertEqual(response_dict, expected_dict)
@@ -63,11 +64,12 @@ class ApiResponseTestCase(TestCase):
         )
         response_dict = response.dict()
 
-        expected_dict = {
+        expected_dict: dict[str, Any] = {
             "status": status,
             "message": message,
             "results": results,
             "error_fields": error_fields,
+            "non_field_errors": [],  # add this line
             "extras": {"extra_key": "extra_value"},
         }
 
@@ -77,11 +79,12 @@ class ApiResponseTestCase(TestCase):
         response = ApiResponse(extra1="value1", extra2="value2")
         response_dict = response.dict()
 
-        expected_dict = {
+        expected_dict: dict[str, Any] = {
             "status": 400,
             "message": None,
             "results": None,
-            "error_fields": None,
+            "error_fields": {},
+            "non_field_errors": [],
             "extras": {"extra1": "value1", "extra2": "value2"},
         }
 
@@ -91,11 +94,12 @@ class ApiResponseTestCase(TestCase):
         response = ApiResponse(extras={"extra1": "value1", "extra2": "value2"})
         response_dict = response.dict()
 
-        expected_dict = {
+        expected_dict: dict[str, Any] = {
             "status": 400,
             "message": None,
             "results": None,
-            "error_fields": None,
+            "error_fields": {},
+            "non_field_errors": [],
             "extras": {"extra1": "value1", "extra2": "value2"},
         }
 

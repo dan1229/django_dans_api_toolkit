@@ -41,9 +41,13 @@ class ApiResponseRenderer(JSONRenderer):
         if not data.get("results") and data.get("results") != []:
             data["results"] = None
 
-        # if 'error_fields' does NOT exist, get one just in case
-        if not data.get("error_fields"):
-            data["error_fields"] = None
+        # Ensure error_fields is always a dict
+        if "error_fields" not in data or data["error_fields"] is None:
+            data["error_fields"] = {}
+
+        # Ensure non_field_errors is always a list
+        if "non_field_errors" not in data or data["non_field_errors"] is None:
+            data["non_field_errors"] = []
 
         return super(ApiResponseRenderer, self).render(
             data, accepted_media_type, renderer_context
