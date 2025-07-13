@@ -65,6 +65,8 @@ class ApiResponseHandlerTestCase(TestCase):
         response = self.api_response_handler.response_error(error_fields=error_fields)
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["message"], "Field error message.")
+        self.assertEqual(response.data["error_fields"], error_fields)
+        self.assertEqual(response.data["non_field_errors"], [])
 
     def test_response_error_logging(self) -> None:
         custom_message = "Log this error."
@@ -86,6 +88,8 @@ class ApiResponseHandlerTestCase(TestCase):
         response = self.api_response_handler.response_error(results=results)
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["results"], results)
+        self.assertEqual(response.data["error_fields"], {})
+        self.assertEqual(response.data["non_field_errors"], [])
 
     def test_response_success_with_mixed_results(self) -> None:
         results: dict[str, object] = {
@@ -191,6 +195,7 @@ class ApiResponseHandlerTestCase(TestCase):
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["message"], custom_message)
         self.assertEqual(response.data["error_fields"], error_fields)
+        self.assertEqual(response.data["non_field_errors"], [])
 
     def test_custom_message_priority_over_drf_validation_error(self) -> None:
         """Test that custom message takes priority over DRF-style validation errors."""
@@ -203,6 +208,7 @@ class ApiResponseHandlerTestCase(TestCase):
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["message"], custom_message)
         self.assertEqual(response.data["error_fields"], drf_error.detail)
+        self.assertEqual(response.data["non_field_errors"], [])
 
     def test_error_fields_fallback_when_no_message(self) -> None:
         """Test that error_fields are used for message when no custom message is provided."""
@@ -215,6 +221,7 @@ class ApiResponseHandlerTestCase(TestCase):
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["message"], "This field may not be blank.")
         self.assertEqual(response.data["error_fields"], error_fields)
+        self.assertEqual(response.data["non_field_errors"], [])
 
     def test_drf_validation_error_with_non_field_errors(self) -> None:
         """Test DRF ValidationError with non_field_errors is properly parsed."""
@@ -231,6 +238,8 @@ class ApiResponseHandlerTestCase(TestCase):
         self.assertEqual(
             response.data["message"], "Unable to log in with provided credentials."
         )
+        self.assertEqual(response.data["error_fields"], {})
+        self.assertEqual(response.data["non_field_errors"], [])
 
     def test_drf_validation_error_without_non_field_errors(self) -> None:
         """Test DRF ValidationError without non_field_errors uses first field error."""
@@ -249,6 +258,8 @@ class ApiResponseHandlerTestCase(TestCase):
         self.assertIn(
             message, ["This field is required.", "This field may not be blank."]
         )
+        self.assertEqual(response.data["error_fields"], {})
+        self.assertEqual(response.data["non_field_errors"], [])
 
     def test_error_fields_with_non_field_errors_priority(self) -> None:
         """Test that non_field_errors in error_fields takes priority over field-specific errors."""
@@ -261,6 +272,8 @@ class ApiResponseHandlerTestCase(TestCase):
 
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["message"], "General validation error.")
+        self.assertEqual(response.data["error_fields"], error_fields)
+        self.assertEqual(response.data["non_field_errors"], [])
 
     def test_empty_error_fields_uses_default_message(self) -> None:
         """Test that empty error_fields results in default error message."""
@@ -270,6 +283,8 @@ class ApiResponseHandlerTestCase(TestCase):
         self.assertEqual(
             response.data["message"], self.api_response_handler.message_error
         )
+        self.assertEqual(response.data["error_fields"], {})
+        self.assertEqual(response.data["non_field_errors"], [])
 
     def test_generic_exception_parsing(self) -> None:
         """Test that generic exceptions are converted to string messages."""
@@ -279,6 +294,8 @@ class ApiResponseHandlerTestCase(TestCase):
 
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["message"], "Invalid value provided")
+        self.assertEqual(response.data["error_fields"], {})
+        self.assertEqual(response.data["non_field_errors"], [])
 
     def test_message_priority_over_all_error_types(self) -> None:
         """Test that custom message always takes priority over any error type."""
@@ -289,24 +306,32 @@ class ApiResponseHandlerTestCase(TestCase):
             message=custom_message, error=django_error
         )
         self.assertEqual(response.data["message"], custom_message)
+        self.assertEqual(response.data["error_fields"], {})
+        self.assertEqual(response.data["non_field_errors"], [])
         # Test with DRF ValidationError
         drf_error = DRFValidationError({"non_field_errors": ["DRF validation failed."]})
         response = self.api_response_handler.response_error(
             message=custom_message, error=drf_error
         )
         self.assertEqual(response.data["message"], custom_message)
+        self.assertEqual(response.data["error_fields"], {})
+        self.assertEqual(response.data["non_field_errors"], [])
         # Test with IntegrityError
         integrity_error = IntegrityError("Database constraint violation")
         response = self.api_response_handler.response_error(
             message=custom_message, error=integrity_error
         )
         self.assertEqual(response.data["message"], custom_message)
+        self.assertEqual(response.data["error_fields"], {})
+        self.assertEqual(response.data["non_field_errors"], [])
         # Test with error_fields
         error_fields: dict[str, list[str]] = {"field1": ["Field validation failed."]}
         response = self.api_response_handler.response_error(
             message=custom_message, error_fields=error_fields
         )
         self.assertEqual(response.data["message"], custom_message)
+        self.assertEqual(response.data["error_fields"], error_fields)
+        self.assertEqual(response.data["non_field_errors"], [])
 
     def test_complex_drf_validation_error_structure(self) -> None:
         """Test handling of complex DRF ValidationError structures."""
@@ -328,6 +353,8 @@ class ApiResponseHandlerTestCase(TestCase):
         message = response.data["message"]
         self.assertIsInstance(message, str)
         self.assertNotEqual(message, self.api_response_handler.message_error)
+        self.assertEqual(response.data["error_fields"], {})
+        self.assertEqual(response.data["non_field_errors"], [])
 
     def test_extremely_nested_error_structure(self) -> None:
         """Test handling of extremely nested error structures (lists of dicts of lists)."""
@@ -340,6 +367,8 @@ class ApiResponseHandlerTestCase(TestCase):
         response = self.api_response_handler.response_error(error=drf_error)
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["message"], "Deep error message!")
+        self.assertEqual(response.data["error_fields"], {})
+        self.assertEqual(response.data["non_field_errors"], [])
 
     def test_backwards_compatibility_with_existing_tests(self) -> None:
         """Ensure all existing functionality still works exactly the same."""
@@ -350,26 +379,36 @@ class ApiResponseHandlerTestCase(TestCase):
         self.assertEqual(
             response.data["message"], self.api_response_handler.message_error
         )
+        self.assertEqual(response.data["error_fields"], {})
+        self.assertEqual(response.data["non_field_errors"], [])
 
         # Test 2: Custom message behavior
         custom_message = "Custom error message."
         response = self.api_response_handler.response_error(message=custom_message)
         self.assertEqual(response.data["message"], custom_message)
+        self.assertEqual(response.data["error_fields"], {})
+        self.assertEqual(response.data["non_field_errors"], [])
 
         # Test 3: Django ValidationError behavior
         error = ValidationError({"__all__": ["Validation error message."]})
         response = self.api_response_handler.response_error(error=error)
         self.assertEqual(response.data["message"], "Validation error message.")
+        self.assertEqual(response.data["error_fields"], {})
+        self.assertEqual(response.data["non_field_errors"], [])
 
         # Test 4: IntegrityError behavior
         integrity_error = IntegrityError("Integrity error message.")
         response = self.api_response_handler.response_error(error=integrity_error)
         self.assertEqual(response.data["message"], "Integrity error message.")
+        self.assertEqual(response.data["error_fields"], {})
+        self.assertEqual(response.data["non_field_errors"], [])
 
         # Test 5: error_fields behavior
         error_fields: dict[str, list[str]] = {"field": ["Field error message."]}
         response = self.api_response_handler.response_error(error_fields=error_fields)
         self.assertEqual(response.data["message"], "Field error message.")
+        self.assertEqual(response.data["error_fields"], error_fields)
+        self.assertEqual(response.data["non_field_errors"], [])
 
     def test_non_field_errors_are_top_level(self) -> None:
         """Test that non_field_errors are top-level and not inside error_fields."""
@@ -390,34 +429,32 @@ class ApiResponseHandlerTestCase(TestCase):
             ],
         )
         self.assertNotIn("non_field_errors", response.data.get("error_fields", {}))
+        self.assertEqual(response.data["error_fields"], error_fields)
 
     def test_only_non_field_errors(self) -> None:
         """Test response when only non_field_errors are present."""
-        error_fields: dict[str, list[str]] = {"non_field_errors": ["General error."]}
         response = self.api_response_handler.response_error(
-            error_fields=error_fields.copy()
+            error_fields={"non_field_errors": ["General error."]}
         )
         self.assertIn("non_field_errors", response.data)
         self.assertEqual(response.data["non_field_errors"], ["General error."])
-        self.assertIsNone(response.data.get("error_fields"))
+        self.assertEqual(response.data["error_fields"], {})
 
     def test_only_field_errors(self) -> None:
         """Test response when only field errors are present."""
-        error_fields: dict[str, list[str]] = {"field": ["Field error."]}
         response = self.api_response_handler.response_error(
-            error_fields=error_fields.copy()
+            error_fields={"field": ["Field error."]}
         )
-        self.assertNotIn("non_field_errors", response.data)
+        self.assertEqual(response.data["non_field_errors"], [])
         self.assertEqual(response.data["error_fields"], {"field": ["Field error."]})
 
     def test_both_non_field_and_field_errors(self) -> None:
         """Test response when both non_field_errors and field errors are present."""
-        error_fields: dict[str, list[str]] = {
-            "non_field_errors": ["General error."],
-            "field": ["Field error."],
-        }
         response = self.api_response_handler.response_error(
-            error_fields=error_fields.copy()
+            error_fields={
+                "non_field_errors": ["General error."],
+                "field": ["Field error."],
+            }
         )
         self.assertIn("non_field_errors", response.data)
         self.assertEqual(response.data["non_field_errors"], ["General error."])
@@ -447,27 +484,23 @@ class ApiResponseHandlerTestCase(TestCase):
     def test_error_fields_is_none(self) -> None:
         """Test response when error_fields is None."""
         response = self.api_response_handler.response_error(error_fields=None)
-        self.assertNotIn("non_field_errors", response.data)
-        self.assertIsNone(response.data.get("error_fields"))
+        self.assertEqual(response.data["error_fields"], {})
+        self.assertEqual(response.data["non_field_errors"], [])
 
     def test_error_fields_is_empty_dict(self) -> None:
         """Test response when error_fields is an empty dict."""
         response = self.api_response_handler.response_error(error_fields={})
-        self.assertNotIn("non_field_errors", response.data)
-        self.assertIsNone(response.data.get("error_fields"))
+        self.assertEqual(response.data["error_fields"], {})
+        self.assertEqual(response.data["non_field_errors"], [])
 
     def test_non_field_errors_is_none(self) -> None:
         """Test response when non_field_errors is present and None."""
-        error_fields: dict[str, list[str]] = {"non_field_errors": []}
-        response = self.api_response_handler.response_error(
-            error_fields=error_fields.copy()
-        )
-        # Should not include non_field_errors if None
-        self.assertNotIn("non_field_errors", response.data)
-        self.assertIsNone(response.data.get("error_fields"))
+        response = self.api_response_handler.response_error(error_fields=None)
+        self.assertEqual(response.data["non_field_errors"], [])
+        self.assertEqual(response.data["error_fields"], {})
 
     def test_both_missing(self) -> None:
         """Test response when both error_fields and non_field_errors are missing."""
         response = self.api_response_handler.response_error()
-        self.assertNotIn("non_field_errors", response.data)
-        self.assertIsNone(response.data.get("error_fields"))
+        self.assertEqual(response.data["error_fields"], {})
+        self.assertEqual(response.data["non_field_errors"], [])

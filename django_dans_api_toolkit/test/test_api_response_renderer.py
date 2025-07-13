@@ -34,7 +34,7 @@ class ApiResponseRendererTestCase(TestCase):
 
         self.assertIn(b'"message":"Not found"', rendered_content)
         self.assertIn(b'"results":null', rendered_content)
-        self.assertIn(b'"error_fields":null', rendered_content)
+        self.assertIn(b'"error_fields":{}', rendered_content)
 
     def test_render_without_message(self) -> None:
         request = self.factory.post("/mock-view/")
@@ -47,7 +47,7 @@ class ApiResponseRendererTestCase(TestCase):
 
         self.assertIn(b'"message":"Successfully completed request."', rendered_content)
         self.assertIn(b'"results":{"key":"value"}', rendered_content)
-        self.assertIn(b'"error_fields":null', rendered_content)
+        self.assertIn(b'"error_fields":{}', rendered_content)
 
     def test_render_without_results(self) -> None:
         request = self.factory.get("/mock-view/")
@@ -60,7 +60,7 @@ class ApiResponseRendererTestCase(TestCase):
 
         self.assertIn(b'"message":"Custom message"', rendered_content)
         self.assertIn(b'"results":null', rendered_content)
-        self.assertIn(b'"error_fields":null', rendered_content)
+        self.assertIn(b'"error_fields":{}', rendered_content)
 
     def test_render_without_error_fields(self) -> None:
         request = self.factory.get("/mock-view/")
@@ -76,7 +76,7 @@ class ApiResponseRendererTestCase(TestCase):
 
         self.assertIn(b'"message":"Another custom message"', rendered_content)
         self.assertIn(b'"results":{"key":"value"}', rendered_content)
-        self.assertIn(b'"error_fields":null', rendered_content)
+        self.assertIn(b'"error_fields":{}', rendered_content)
 
     def test_render_combined_scenario(self) -> None:
         request = self.factory.get("/mock-view/")
@@ -89,7 +89,7 @@ class ApiResponseRendererTestCase(TestCase):
 
         self.assertIn(b'"message":"Error. Please try again later."', rendered_content)
         self.assertIn(b'"results":null', rendered_content)
-        self.assertIn(b'"error_fields":null', rendered_content)
+        self.assertIn(b'"error_fields":{}', rendered_content)
 
     # Additional test cases for 100% coverage
 
@@ -119,7 +119,7 @@ class ApiResponseRendererTestCase(TestCase):
 
         self.assertIn(b'"message":"Custom detail"', rendered_content)
         self.assertIn(b'"results":null', rendered_content)
-        self.assertIn(b'"error_fields":null', rendered_content)
+        self.assertIn(b'"error_fields":{}', rendered_content)
 
     def test_render_with_no_detail_no_results(self) -> None:
         request = self.factory.get("/mock-view/")
@@ -132,7 +132,7 @@ class ApiResponseRendererTestCase(TestCase):
 
         self.assertIn(b'"message":"Successfully completed request."', rendered_content)
         self.assertIn(b'"results":null', rendered_content)
-        self.assertIn(b'"error_fields":null', rendered_content)
+        self.assertIn(b'"error_fields":{}', rendered_content)
 
     def test_render_with_no_renderer_context(self) -> None:
         response = Response({"key": "value"}, status=status.HTTP_200_OK)
