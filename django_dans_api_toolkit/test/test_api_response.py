@@ -38,7 +38,7 @@ class ApiResponseTestCase(TestCase):
         response = ApiResponse()
         response_dict = response.dict()
 
-        expected_dict = {
+        expected_dict: dict[str, Any] = {
             "status": 400,
             "message": None,
             "results": None,
@@ -64,7 +64,7 @@ class ApiResponseTestCase(TestCase):
         )
         response_dict = response.dict()
 
-        expected_dict = {
+        expected_dict: dict[str, Any] = {
             "status": status,
             "message": message,
             "results": results,
@@ -79,7 +79,7 @@ class ApiResponseTestCase(TestCase):
         response = ApiResponse(extra1="value1", extra2="value2")
         response_dict = response.dict()
 
-        expected_dict = {
+        expected_dict: dict[str, Any] = {
             "status": 400,
             "message": None,
             "results": None,
@@ -94,7 +94,7 @@ class ApiResponseTestCase(TestCase):
         response = ApiResponse(extras={"extra1": "value1", "extra2": "value2"})
         response_dict = response.dict()
 
-        expected_dict = {
+        expected_dict: dict[str, Any] = {
             "status": 400,
             "message": None,
             "results": None,

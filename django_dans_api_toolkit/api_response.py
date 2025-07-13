@@ -69,7 +69,7 @@ class ApiResponse:
             pag_keys = ["count", "next", "previous"]
             if any(k in self.results for k in pag_keys):
                 is_paginated = True
-        if is_paginated:
+        if is_paginated and isinstance(self.results, dict):
             res = {
                 "status": self.status,
                 "message": self.message,
