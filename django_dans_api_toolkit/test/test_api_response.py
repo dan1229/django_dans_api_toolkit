@@ -104,3 +104,22 @@ class ApiResponseTestCase(TestCase):
         }
 
         self.assertEqual(response_dict, expected_dict)
+
+    def test_dict_paginated_results_flattened(self) -> None:
+        results: dict[str, Any] = {"count": 2, "next": None, "results": [1, 2]}
+        response_dict = ApiResponse(status=200, results=results).dict()
+        self.assertEqual(response_dict["count"], 2)
+        self.assertIsNone(response_dict["next"])
+        self.assertIsNone(response_dict["previous"])
+        self.assertEqual(response_dict["results"], [1, 2])
+
+    def test_dict_results_key_without_pagination_not_flattened(self) -> None:
+        results: dict[str, Any] = {"results": [1]}
+        response_dict = ApiResponse(status=200, results=results).dict()
+        self.assertEqual(response_dict["results"], {"results": [1]})
+        self.assertNotIn("count", response_dict)
+
+    def test_dict_non_list_non_field_errors_wrapped(self) -> None:
+        response = ApiResponse()
+        response.non_field_errors = "set after init"  # type: ignore[assignment]
+        self.assertEqual(response.dict()["non_field_errors"], ["set after init"])

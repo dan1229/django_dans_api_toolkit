@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from unittest.mock import MagicMock
+from rest_framework.response import Response
 from ..api_response_handler import ApiResponseHandler
 
 
@@ -512,3 +513,88 @@ class ApiResponseHandlerTestCase(TestCase):
         response = self.api_response_handler.response_error()
         self.assertEqual(response.data["error_fields"], {})
         self.assertEqual(response.data["non_field_errors"], [])
+
+
+class ApiResponseHandlerCharacterizationTestCase(TestCase):
+    """Pins existing behaviour so refactors can't silently change API output."""
+
+    def setUp(self) -> None:
+        self.handler = ApiResponseHandler()
+
+    def _message(self, **kwargs) -> str:
+        return self.handler.response_error(print_log=False, **kwargs).data["message"]
+
+    def test_injected_logger_used_for_non_dict_response_data(self) -> None:
+        logger = MagicMock()
+        handler = ApiResponseHandler(logger=logger)
+        response = handler.response_success(response=Response(["not", "a", "dict"]))
+        logger.warning.assert_called_once()
+        self.assertNotIn("extras", response.data)
+
+    def test_non_dict_response_data_default_logger(self) -> None:
+        with self.assertLogs("django_dans_api_toolkit", level="WARNING"):
+            self.handler.response_success(response=Response(["x"]))
+
+    def test_dict_response_data_becomes_extras(self) -> None:
+        response = self.handler.response_success(response=Response({"extra": 1}))
+        self.assertEqual(response.data["extras"], {"extra": 1})
+
+    def test_print_log_none_defaults_to_logging(self) -> None:
+        logger = MagicMock()
+        ApiResponseHandler(logger=logger).response_error(error="boom", print_log=None)
+        logger.error.assert_called_once()
+
+    def test_message_equal_to_exception_text_logged_once(self) -> None:
+        logger = MagicMock()
+        ApiResponseHandler(logger=logger).response_error(
+            error=ValueError("same"), message="same"
+        )
+        self.assertEqual(logger.error.call_args[0][0], "same")
+
+    def test_message_and_exception_logged_together(self) -> None:
+        logger = MagicMock()
+        ApiResponseHandler(logger=logger).response_error(
+            error=ValueError("raw"), message="friendly"
+        )
+        self.assertEqual(logger.error.call_args[0][0], "friendly - raw")
+
+    def test_status_none_keeps_existing_behaviour(self) -> None:
+        # Known quirk kept for compatibility: body status 400, HTTP status 200.
+        response = self.handler.response_error(status=None, print_log=False)
+        self.assertEqual(response.data["status"], 400)
+        self.assertEqual(response.status_code, 200)
+
+    def test_error_fields_nested_skips_empty_entries(self) -> None:
+        msg = self._message(error_fields={"a": [None, ""], "b": {"c": None, "d": "x"}})
+        self.assertEqual(msg, "x")
+
+    def test_error_fields_nothing_parsable_uses_default(self) -> None:
+        self.assertEqual(
+            self._message(error_fields={"a": [None]}), self.handler.message_error
+        )
+
+    def test_django_all_empty_uses_default(self) -> None:
+        error = ValidationError({"__all__": []})
+        self.assertEqual(self._message(error=error), self.handler.message_error)
+
+    def test_django_error_without_all_uses_str(self) -> None:
+        error = ValidationError({"email": ["Bad email."]})
+        self.assertEqual(self._message(error=error), str(error))
+
+    def test_drf_empty_non_field_errors_falls_to_nested(self) -> None:
+        error = DRFValidationError({"non_field_errors": [], "name": ["Required."]})
+        self.assertEqual(self._message(error=error), "Required.")
+
+    def test_drf_detail_not_container_uses_str(self) -> None:
+        error = DRFValidationError("x")
+        error.detail = "plain detail"
+        self.assertEqual(self._message(error=error), "plain detail")
+
+    def test_drf_without_detail_uses_default(self) -> None:
+        class NoDetail(DRFValidationError):
+            def __str__(self) -> str:
+                return "no detail"
+
+        error = NoDetail("x")
+        del error.detail
+        self.assertEqual(self._message(error=error), self.handler.message_error)

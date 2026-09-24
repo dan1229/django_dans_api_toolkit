@@ -165,3 +165,12 @@ class ApiResponseRendererTestCase(TestCase):
         self.assertIn(b'"results":null', rendered_content)
         self.assertIn(b'"error_fields":{"field":"error"}', rendered_content)
         self.assertIn(b'"non_field_errors":[]', rendered_content)
+
+    def test_render_keeps_existing_non_field_errors(self) -> None:
+        response = Response(
+            {"non_field_errors": ["Nope."]}, status=status.HTTP_400_BAD_REQUEST
+        )
+        rendered_content = ApiResponseRenderer().render(
+            response.data, renderer_context={"response": response}  # type: ignore[arg-type]
+        )
+        self.assertIn(b'"non_field_errors":["Nope."]', rendered_content)

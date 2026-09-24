@@ -121,6 +121,8 @@ The `BaseSerializer` class is a base class that you can use to create your own s
 Some features include:
 - `masked` - a list of fields that should be masked in the response. This can be controlled on a per-serializer instance basis.
     - Set this via `masked_fields` in the serializer's `Meta` class.
+    - By default a masked field is removed from the response.
+    - Opt in to `mask_as_null` (on the serializer, its `Meta`, or as `mask_as_null=True`) to keep the key with a `null` value instead, so clients see a stable shape. The nulled field is read-only, so input for it is ignored.
 - `ref_serializer` - whether or not this serializer is a reference serializer. This can significantly help performance optimizations
     - Set this via `ref_fields` in the serializer's `Meta` class.
 - `fields` - a list of fields that should be included in the response. This is to help with very specific use cases where you want to limit the fields returned.

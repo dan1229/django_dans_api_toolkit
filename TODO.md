@@ -24,25 +24,7 @@
 
 
 
-#### get coverage to 100%
-- yup
-
-
-
-#### pypi test cd script
-- upload to test py on each push
-
-
-
-#### masked fields shouldn't be removed
-- i.e., don't remove the key just put "MASKED" or something?
-    - maybe make this an option?
-    - by default show the key with no value
-    
-
-
 #### update readme and docs?
-- more badges?
 - other docs could use clean up
 - add docs
     - models?
@@ -97,8 +79,60 @@
 - can we avoid the stacktrace from this app?
 
 
-### [1.3.0] - 2025-MM-DD
-- TODO
+
+-----
+### 2.0.0 - output-changing fixes, held back from 1.3.0 so nothing downstream breaks
+
+#### response status doesn't match http status
+- `response_error` / `response_success` pass the raw `status` param to `Response()`
+    - should be `api_response.status` so there's one source of truth
+- with `status=None` the body says `"status": 400` but the actual http status is 200
+    - drf falls back to 200 when status is None, ApiResponse defaults its own to 400
+- breaking: `response_success(status=None)` would flip from http 200 to 400
+    - `test_status_none_keeps_existing_behaviour` pins the current quirk; update it with the fix
+
+
+
+#### validation error fallback never reaches error_fields
+- `_parse_validation_error_message` in `api_response_handler.py`
+- docstring promises a 5 step preference order but it's an `elif` chain
+    - so step 5 (extract from `error_fields`) is unreachable whenever `error` is truthy
+- a django `ValidationError` without `__all__` falls to `elif isinstance(error, Exception)`
+    - returns `str(error)`, the raw list repr, instead of a clean message
+- either restructure the chain or fix the docstring to describe the type switch it actually is
+- breaking: changes the `message` clients see; `test_django_error_without_all_uses_str` pins it
+
+
+
+#### BaseSerializer self.kwargs loses the popped keys
+- `serializers/base.py` does `self.kwargs = kwargs`, then pops from that same dict
+- so `self.kwargs` ends up missing `masked` / `ref_serializer` / `fields` / `mask_as_null`
+- wants `dict(kwargs)` if the point was keeping the original call
+    - or just delete the attribute, nothing seems to read it
+- breaking-ish: a subclass forwarding `**self.kwargs` to a plain ModelSerializer would start
+  passing keys it rejects
+
+
+
+#### make mask_as_null the default?
+- 1.3.0 ships it opt-in; flipping the default changes every masked response shape
+
+
+
+#### logger fallback in _handle_logging
+- `logger = self.logger or DEFAULT_LOGGER` looks dead since `__init__` guarantees a logger
+    - kept on purpose: a subclass that sets `self.logger = None` would otherwise crash
+
+
+
+### [1.3.0] - 2026-MM-DD
+- Added: `mask_as_null` opt-in for `BaseSerializer`. Masked fields keep their key with a `null` value instead of being removed.
+    - Set it on the serializer, its `Meta`, or pass `mask_as_null=True`. Default output is unchanged.
+    - Nulled fields are read-only, so input for them is ignored.
+- Fixed: a logger passed to `ApiResponseHandler` is now also used for the non-dict `response.data` warning.
+- Fixed: logging no longer repeats the text when `message` equals the exception's text.
+- Test coverage is now 100% (lines and branches); new tests pin existing response behaviour.
+- CI: every push to main builds a `.devN` package and publishes it to TestPyPI when `TEST_PYPI_PASSWORD` is set.
 
 -------------------------------------------------------
 

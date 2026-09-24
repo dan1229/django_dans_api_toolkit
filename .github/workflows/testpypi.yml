@@ -1,0 +1,51 @@
+name: TestPyPI
+
+# Publishes a dev build to TestPyPI on every push to main, so packaging problems
+# surface before a real release. Each build gets a unique version
+# (<setup.cfg version>.dev<run number>) because PyPI never accepts a re-upload.
+#
+# Needs the repo secret TEST_PYPI_PASSWORD: an API token from test.pypi.org.
+# Without it the job builds and checks the package, then skips the upload.
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  publish-testpypi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel twine
+
+      - name: Stamp dev version
+        run: |
+          base=$(sed -n 's/^version = //p' setup.cfg)
+          sed -i "s/^version = .*/version = ${base}.dev${{ github.run_number }}/" setup.cfg
+          grep '^version' setup.cfg
+
+      - name: Build and check
+        run: |
+          python setup.py sdist bdist_wheel
+          twine check dist/*
+
+      - name: Publish
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_PASSWORD }}
+        run: |
+          if [ -z "$TWINE_PASSWORD" ]; then
+            echo "::notice::TEST_PYPI_PASSWORD not set - skipping upload"
+            exit 0
+          fi
+          twine upload --repository-url https://test.pypi.org/legacy/ --skip-existing dist/*

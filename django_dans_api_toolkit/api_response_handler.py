@@ -49,6 +49,7 @@ class ApiResponseHandler:
         status: Optional[int] = None,
         error_fields: Optional[Dict[str, List[str]]] = None,
         non_field_errors: Optional[List[str]] = None,
+        logger: Optional[logging.Logger] = None,
     ) -> Response:
         """Internal function to format responses.
 
@@ -59,6 +60,7 @@ class ApiResponseHandler:
             status (int): Status to use in response.
             error_fields (dict, optional): Dictionary of field errors to include - typically provided by Django exceptions. Defaults to None.
             non_field_errors (list, optional): List of non-field errors to include as top-level key.
+            logger (Logger, optional): Logger for warnings. Defaults to the package logger.
 
         Returns:
             Response: DRF response object with desired format - can be used directly in views
@@ -76,7 +78,7 @@ class ApiResponseHandler:
                 api_response.extras = response.data
             else:
                 api_response.extras = None
-                DEFAULT_LOGGER.warning(
+                (logger or DEFAULT_LOGGER).warning(
                     f"ApiResponseHandler: response.data was not a dict (got {type(response.data).__name__}), extras set to None. This is unexpected and should be fixed."
                 )
         return Response(api_response.dict(), status=status)
@@ -124,18 +126,9 @@ class ApiResponseHandler:
 
         def _extract_first_string_error(obj: Any) -> Optional[str]:
             """Recursively extract the first string error from nested dicts/lists, including DRF ErrorDetail objects."""
-            # DRF's ErrorDetail objects are not always present (if DRF isn't installed),
-            # so we import ErrorDetail locally and only check for it if available.
-            # This avoids a hard dependency on DRF for users who only use Django.
-            try:
-                from rest_framework.exceptions import ErrorDetail
-
-                if isinstance(obj, ErrorDetail):
-                    return str(obj)
-            except ImportError:
-                pass
+            # DRF's ErrorDetail subclasses str, so this covers it too
             if isinstance(obj, str):
-                return obj
+                return str(obj)
             if isinstance(obj, list):
                 for item in obj:
                     result = _extract_first_string_error(item)
@@ -228,7 +221,11 @@ class ApiResponseHandler:
             results_out = results
 
         return self._format_response(
-            response=response, results=results_out, message=message, status=status
+            response=response,
+            results=results_out,
+            message=message,
+            status=status,
+            logger=self.logger,
         )
 
     #
@@ -281,7 +278,9 @@ class ApiResponseHandler:
             # Only pass exception to logging if it's actually an Exception instance
             exception_for_logging = error if isinstance(error, Exception) else None
 
-            if message and message != error:  # message and error different, log both
+            if message and message != str(
+                error
+            ):  # message and error different, log both
                 self._handle_logging(
                     f"{message} - {error}", print_log, exception_for_logging
                 )
@@ -313,4 +312,5 @@ class ApiResponseHandler:
             status=status,
             error_fields=error_fields_copy,
             non_field_errors=non_field_errors,
+            logger=self.logger,
         )
