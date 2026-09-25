@@ -24,6 +24,14 @@
 
 
 
+#### turn on TestPyPI uploads
+- `testpypi.yml` builds a `.devN` package on every push to main but skips the upload
+    - it needs a `TEST_PYPI_PASSWORD` repo secret, same idea as `PYPI_PASSWORD`
+- make an API token at test.pypi.org (account settings, API tokens), add it as the secret
+- or drop the workflow if it's not worth it
+
+
+
 #### update readme and docs?
 - other docs could use clean up
 - add docs
