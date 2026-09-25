@@ -20,7 +20,7 @@
 
 
 -----
-### 1.3.0
+### 1.4.0
 
 
 
@@ -41,11 +41,6 @@
     - a bit misleading
 
 
-
-
-#### add lots of tests?
-- at least re-evaluate them
-- coverage too i guess
 
 
 #### pagination detection should use pagination class
@@ -119,6 +114,15 @@
 
 
 
+#### injected logger ignored for the non-dict response.data warning
+- `_format_response` is a staticmethod, so its warning always goes to `DEFAULT_LOGGER`
+- routing it through `self.logger` means adding a param to `_format_response`
+    - breaking: a subclass overriding `_format_response` with the old signature gets a TypeError
+    - `test_non_dict_response_data_ignores_injected_logger` pins the current routing
+- maybe make it an instance method, or let callers catch the warning some other way
+
+
+
 #### logger fallback in _handle_logging
 - `logger = self.logger or DEFAULT_LOGGER` looks dead since `__init__` guarantees a logger
     - kept on purpose: a subclass that sets `self.logger = None` would otherwise crash
@@ -129,7 +133,6 @@
 - Added: `mask_as_null` opt-in for `BaseSerializer`. Masked fields keep their key with a `null` value instead of being removed.
     - Set it on the serializer, its `Meta`, or pass `mask_as_null=True`. Default output is unchanged.
     - Nulled fields are read-only, so input for them is ignored.
-- Fixed: a logger passed to `ApiResponseHandler` is now also used for the non-dict `response.data` warning.
 - Fixed: logging no longer repeats the text when `message` equals the exception's text.
 - Test coverage is now 100% (lines and branches); new tests pin existing response behaviour.
 - CI: every push to main builds a `.devN` package and publishes it to TestPyPI when `TEST_PYPI_PASSWORD` is set.

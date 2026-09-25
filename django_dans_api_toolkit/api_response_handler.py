@@ -49,7 +49,6 @@ class ApiResponseHandler:
         status: Optional[int] = None,
         error_fields: Optional[Dict[str, List[str]]] = None,
         non_field_errors: Optional[List[str]] = None,
-        logger: Optional[logging.Logger] = None,
     ) -> Response:
         """Internal function to format responses.
 
@@ -60,7 +59,6 @@ class ApiResponseHandler:
             status (int): Status to use in response.
             error_fields (dict, optional): Dictionary of field errors to include - typically provided by Django exceptions. Defaults to None.
             non_field_errors (list, optional): List of non-field errors to include as top-level key.
-            logger (Logger, optional): Logger for warnings. Defaults to the package logger.
 
         Returns:
             Response: DRF response object with desired format - can be used directly in views
@@ -78,7 +76,7 @@ class ApiResponseHandler:
                 api_response.extras = response.data
             else:
                 api_response.extras = None
-                (logger or DEFAULT_LOGGER).warning(
+                DEFAULT_LOGGER.warning(
                     f"ApiResponseHandler: response.data was not a dict (got {type(response.data).__name__}), extras set to None. This is unexpected and should be fixed."
                 )
         return Response(api_response.dict(), status=status)
@@ -221,11 +219,7 @@ class ApiResponseHandler:
             results_out = results
 
         return self._format_response(
-            response=response,
-            results=results_out,
-            message=message,
-            status=status,
-            logger=self.logger,
+            response=response, results=results_out, message=message, status=status
         )
 
     #
@@ -312,5 +306,4 @@ class ApiResponseHandler:
             status=status,
             error_fields=error_fields_copy,
             non_field_errors=non_field_errors,
-            logger=self.logger,
         )

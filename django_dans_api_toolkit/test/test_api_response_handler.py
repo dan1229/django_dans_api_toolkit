@@ -524,12 +524,39 @@ class ApiResponseHandlerCharacterizationTestCase(TestCase):
     def _message(self, **kwargs) -> str:
         return self.handler.response_error(print_log=False, **kwargs).data["message"]
 
-    def test_injected_logger_used_for_non_dict_response_data(self) -> None:
+    def test_non_dict_response_data_ignores_injected_logger(self) -> None:
+        # the warning goes to the package logger even with an injected one;
+        # routing it through self.logger means changing _format_response's
+        # signature, which would break subclasses that override it
         logger = MagicMock()
         handler = ApiResponseHandler(logger=logger)
-        response = handler.response_success(response=Response(["not", "a", "dict"]))
-        logger.warning.assert_called_once()
+        with self.assertLogs("django_dans_api_toolkit", level="WARNING"):
+            response = handler.response_success(response=Response(["not", "a", "dict"]))
+        logger.warning.assert_not_called()
         self.assertNotIn("extras", response.data)
+
+    def test_legacy_format_response_override_still_called(self) -> None:
+        # subclasses overriding _format_response with the 1.2.0 signature
+        # must keep working
+        calls = []
+
+        class Legacy(ApiResponseHandler):
+            @staticmethod
+            def _format_response(
+                response=None,
+                results=None,
+                message=None,
+                status=None,
+                error_fields=None,
+                non_field_errors=None,
+            ):
+                calls.append(message)
+                return Response({"message": message})
+
+        handler = Legacy()
+        handler.response_success(message="ok")
+        handler.response_error(message="bad", error="bad", print_log=False)
+        self.assertEqual(calls, ["ok", "bad"])
 
     def test_non_dict_response_data_default_logger(self) -> None:
         with self.assertLogs("django_dans_api_toolkit", level="WARNING"):
