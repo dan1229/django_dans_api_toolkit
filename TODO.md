@@ -129,13 +129,8 @@
 
 
 
-### [1.3.0] - 2026-MM-DD
-- Added: `mask_as_null` opt-in for `BaseSerializer`. Masked fields keep their key with a `null` value instead of being removed.
-    - Set it on the serializer, its `Meta`, or pass `mask_as_null=True`. Default output is unchanged.
-    - Nulled fields are read-only, so input for them is ignored.
-- Fixed: logging no longer repeats the text when `message` equals the exception's text.
-- Test coverage is now 100% (lines and branches); new tests pin existing response behaviour.
-- CI: every push to main builds a `.devN` package and publishes it to TestPyPI when `TEST_PYPI_PASSWORD` is set.
+### [X.X.X] - TBD
+- TODO
 
 -------------------------------------------------------
 
